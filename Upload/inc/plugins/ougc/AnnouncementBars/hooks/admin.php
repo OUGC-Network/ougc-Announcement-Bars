@@ -8,7 +8,7 @@
  *
  *    Website: https://ougc.network
  *
- *    This plugin will allow administrators and super moderators to manage announcement bars.
+ *    Manage custom announcement notifications that render to users in the page.
  *
  ***************************************************************************
  ****************************************************************************
@@ -31,6 +31,10 @@ declare(strict_types=1);
 namespace ougc\AnnouncementBars\Hooks\Admin;
 
 use MyBB;
+
+use function ougc\AnnouncementBars\Core\languageLoad;
+
+use const ougc\AnnouncementBars\ROOT;
 
 function admin_config_plugins_deactivate()
 {
@@ -69,7 +73,7 @@ function admin_forum_menu(array &$menuArray): array
 {
     global $lang, $annbars;
 
-    $annbars->lang_load();
+    languageLoad();
 
     $menuArray[] = [
         'id' => 'ougc_annbars',
@@ -94,7 +98,7 @@ function admin_load()
 
     $action_file_backup = $action_file;
 
-    $modules_dir = \ougc\AnnouncementBars\ROOT;
+    $modules_dir = ROOT;
 
     $run_module = 'admin';
 
@@ -105,7 +109,7 @@ function admin_forum_permissions(array &$args): array
 {
     global $lang, $annbars;
 
-    $annbars->lang_load();
+    languageLoad();
 
     $args['ougc_annbars'] = $lang->ougc_annbars_permissions;
 
@@ -114,15 +118,13 @@ function admin_forum_permissions(array &$args): array
 
 function admin_tools_get_admin_log_action(&$log)
 {
-    if($log['logitem']['module'] == 'forum-ougc_annbars')
-    {
+    if ($log['logitem']['module'] == 'forum-ougc_annbars') {
         global $annbars, $lang;
-        $annbars->lang_load();
+        languageLoad();
 
         $bar = $annbars->get_bar($log['logitem']['data'][0]);
 
-        if(isset($bar['aid']))
-        {
+        if (isset($bar['aid'])) {
             $lang->{$log['lang_string']} = $lang->sprintf($lang->{$log['lang_string']}, 1, $bar['aid']);
         }
     }

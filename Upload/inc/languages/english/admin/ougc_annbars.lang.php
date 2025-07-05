@@ -2,44 +2,44 @@
 
 /***************************************************************************
  *
- *	OUGC Announcement Bars plugin (/inc/languages/english/admin/ougc_annbars.php)
- *	Author: Omar Gonzalez
- *	Copyright: © 2012 - 2020 Omar Gonzalez
+ *    OUGC Announcement Bars plugin (/inc/languages/english/admin/ougc_annbars.php)
+ *    Author: Omar Gonzalez
+ *    Copyright: © 2012 - 2020 Omar Gonzalez
  *
- *	Website: https://ougc.network
+ *    Website: https://ougc.network
  *
- *	This plugin will allow administrators and super moderators to manage announcement bars.
+ *    Manage custom announcement notifications that render to users in the page.
  *
  ***************************************************************************
- 
-****************************************************************************
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
-
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-****************************************************************************/
+ ****************************************************************************
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ****************************************************************************/
 
 // Plugin information.
 $l['ougc_annbars_plugin'] = 'OUGC Announcement Bars';
-$l['ougc_annbars_plugin_d'] = 'This plugin will allow administrators to manage announcement bars.';
+$l['ougc_annbars_plugin_d'] = 'Manage custom announcement notifications that render to users in the page.';
 
 // PluginLibrary
-$l['ougc_annbars_plreq'] = 'This plugin requires <a href="{1}">PluginLibrary</a> version {2} or later to be uploaded to your forum.';
-$l['ougc_annbars_plold'] = 'This plugin requires PluginLibrary version {1} or later, whereas your current version is {2}. Please do update <a href="{3}">PluginLibrary</a>.';
+$l['ougc_announcement_bars_plugin_library'] = 'This plugin requires <a href="{1}">PluginLibrary</a> {2} or above, please install to continue.';
 
 // Settings
-$l['ougc_annbars_setting_limit'] = 'Bars Limit';
-$l['ougc_annbars_setting_limit_desc'] = 'Write the maximum number of bars to show at any page. 0 = no limit.';
-$l['ougc_annbars_setting_dismisstime'] = 'Dismiss Time';
-$l['ougc_annbars_setting_dismisstime_desc'] = 'Input the amount of days users can keep announcements as dismissed.';
+$l['setting_group_ougc_announcement_bars_rules'] = 'Announcement Bars';
+$l['setting_group_ougc_announcement_bars_rules_desc'] = 'Manage custom announcement notifications that render to users in the page.';
+$l['setting_ougc_announcement_bars_limit'] = 'Bars Limit';
+$l['setting_ougc_announcement_bars_limit_desc'] = 'Write the maximum number of bars to show at any page. 0 = no limit.';
+$l['setting_ougc_announcement_bars_dismisstime'] = 'Dismiss Time';
+$l['setting_ougc_announcement_bars_dismisstime_desc'] = 'Input the amount of days users can keep announcements as dismissed.';
 
 // ACP Page
 $l['ougc_annbars_menu'] = 'Announcement Bars';

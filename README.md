@@ -29,6 +29,7 @@
     - [File Structure](#file_structure)
     - [Install](#install)
     - [Update](#update)
+    - [Template Modifications](#template_modifications)
 - [Usage](#usage)
 - [Built Using](#built_using)
 - [Authors](#authors)
@@ -87,6 +88,16 @@ Follow the next steps in order to update your copy of this plugin.
 1. Browse to _Configuration » Plugins_ and deactivate this plugin by clicking _Deactivate_.
 2. Follow step 1 and 2 from the [Install](#install) section.
 3. Browse to _Configuration » Plugins_ and activate this plugin by clicking _Activate_.
+
+[Go up to Table of Contents](#table_of_contents)
+
+### Template Modifications <a name = "template_modifications"></a>
+
+To display the announcements bars it is required that you edit the following template for each of your themes.
+
+1. Place `<!--OUGC_ANNBARS-->` after `<navigation>` in the `header` template.
+
+Alternatively, it is possible to place this code in almost any template to display the announcement bars.
 
 [Go up to Table of Contents](#table_of_contents)
 

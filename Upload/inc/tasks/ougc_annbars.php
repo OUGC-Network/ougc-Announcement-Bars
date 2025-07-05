@@ -2,44 +2,45 @@
 
 /***************************************************************************
  *
- *	OUGC Announcement Bars plugin (/inc/tasks/ougc_annbars.php)
- *	Author: Omar Gonzalez
- *	Copyright: © 2012 - 2020 Omar Gonzalez
+ *    OUGC Announcement Bars plugin (/inc/tasks/ougc_annbars.php)
+ *    Author: Omar Gonzalez
+ *    Copyright: © 2012 - 2020 Omar Gonzalez
  *
- *	Website: https://ougc.network
+ *    Website: https://ougc.network
  *
- *	This plugin will allow administrators and super moderators to manage announcement bars.
+ *    Manage custom announcement notifications that render to users in the page.
  *
  ***************************************************************************
- 
-****************************************************************************
-	This program is free software: you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation, either version 3 of the License, or
-	(at your option) any later version.
+ ****************************************************************************
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ****************************************************************************/
 
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with this program.  If not, see <http://www.gnu.org/licenses/>.
-****************************************************************************/
+use function ougc\AnnouncementBars\Core\cacheUpdate;
+use function ougc\AnnouncementBars\Core\languageLoad;
 
 function task_ougc_annbars($task)
 {
     global $lang;
-	global $annbars;
+    global $annbars;
 
-	if(!($annbars instanceof OUGC_ANNBARS))
-	{
-		$annbars = new OUGC_ANNBARS;
-	}
+    if (!($annbars instanceof OUGC_ANNBARS)) {
+        $annbars = new OUGC_ANNBARS();
+    }
 
-	$annbars->lang_load();
+    languageLoad();
 
-	$annbars->update_cache();
+    cacheUpdate();
 
-	add_task_log($task, $lang->task_ougc_annbars_ran);
+    add_task_log($task, $lang->task_ougc_annbars_ran);
 }

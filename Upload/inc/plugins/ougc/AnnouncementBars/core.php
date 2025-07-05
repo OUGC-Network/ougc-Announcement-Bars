@@ -8,7 +8,7 @@
  *
  *    Website: https://ougc.network
  *
- *    This plugin will allow administrators and super moderators to manage announcement bars.
+ *    Manage custom announcement notifications that render to users in the page.
  *
  ***************************************************************************
  ****************************************************************************
@@ -29,6 +29,10 @@
 declare(strict_types=1);
 
 namespace ougc\AnnouncementBars\Core;
+
+const VERSION = '1.8.37';
+
+const VERSION_CODE = 1837;
 
 function addHooks(string $namespace)
 {
@@ -56,20 +60,57 @@ function addHooks(string $namespace)
     }
 }
 
-function loadLanguage(): bool
+function languageLoad(): bool
 {
     global $lang;
 
-    if (!isset($lang->ougc_annbars_plugin) ) {
-        if(defined('IN_ADMINCP'))
-        {
+    if (!isset($lang->ougc_annbars_plugin)) {
+        if (defined('IN_ADMINCP')) {
             $lang->load('ougc_annbars');
-        }
-        else
-        {
+        } else {
             $lang->load('ougc_annbars', false, true);
         }
     }
 
     return true;
+}
+
+function announcementGet(array $whereClauses, array $queryFields = [], array $queryOptions = []): array
+{
+    global $db;
+
+    $queryFields[] = 'aid';
+
+    $query = $db->simple_select(
+        'ougc_annbars',
+        implode(',', $queryFields),
+        implode(' AND ', $whereClauses),
+        $queryOptions
+    );
+
+    $announcementObjects = [];
+
+    while ($announcementData = $db->fetch_array($query)) {
+        $announcementObjects[(int)$announcementData['aid']] = $announcementData;
+    }
+
+    return $announcementObjects;
+}
+
+function cacheUpdate(): void
+{
+    global $cache;
+
+    $timeNow = TIME_NOW;
+
+    $cacheData = array_map(function ($announcementData) {
+        return $announcementData;
+    },
+        announcementGet(
+            ["startdate<'{$timeNow}'", "enddate>='{$timeNow}'", "visible='1'"],
+            ['aid', 'content', 'style', 'groups', 'forums', 'scripts', 'dismissible', 'frules', 'startdate', 'enddate'],
+            ['order_by' => 'disporder']
+        ));
+
+    $cache->update('ougc_annbars', $cacheData);
 }

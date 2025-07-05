@@ -1,0 +1,84 @@
+/***************************************************************************
+ *
+ *    ougc Announcement Bars plugin
+ *    Author: Omar Gonzalez
+ *    Copyright: © 2012 Omar Gonzalez
+ *
+ *    Website: https://ougc.network
+ *
+ *    Manage custom announcement notifications that render to users in the page.
+ *
+ ***************************************************************************
+ ****************************************************************************
+ * This program is protected software: you can make use of it under
+ * the terms of the OUGC Network EULA as detailed by the included
+ * "EULA.TXT" file.
+ *
+ * This program is distributed with the expectation that it will be
+ * useful, but WITH LIMITED WARRANTY; with a limited warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * OUGC Network EULA included in the "EULA.TXT" file for more details.
+ *
+ * You should have received a copy of the OUGC Network EULA along with
+ * the package which includes this file.  If not, see
+ * <https://ougc.network/eula.txt>.
+ ****************************************************************************/
+
+*[class*='ougc_annbars_'] {
+    color: #fff;
+    padding: 4px;
+    text-align: center;
+    -webkit-box-shadow: inset 0 0 1px #FFF;
+    -moz-box-shadow: inset 0 0 1px #FFF;
+    box-shadow: inset 0 0 1px #FFF;
+}
+
+*[class*='ougc_annbars_'] strong {
+    border-bottom: dashed 1px;
+}
+
+.ougc_annbars_black {
+    border: 1px solid #000000;
+    background: #393939 linear-gradient(to bottom, #393939, #2c2c2c, #1f1f1f, #131313, #000000);
+}
+
+.ougc_annbars_white {
+    color: #000;
+    border: 1px solid #eeeeee;
+    background: #fcfcfc linear-gradient(to bottom, #fcfcfc, #f8f8f8, #f5f5f5, #f1f1f1, #eeeeee);
+}
+
+.ougc_annbars_red {
+    border: 1px solid #ff2929;
+    background: #ff3d3d linear-gradient(to bottom, #ff3d3d, #ff3838, #ff3433, #ff2f2e, #ff2929);
+}
+
+.ougc_annbars_blue {
+    border: 1px solid #2e82d6;
+    background: #448fda linear-gradient(to bottom, #448fda, #3f8cd9, #3989d8, #3485d7, #2e82d6);
+}
+
+.ougc_annbars_green {
+    border: 1px solid #0ac247;
+    background: #0bda51 linear-gradient(to bottom, #0bda51, #0bd44e, #0bce4c, #0ac849, #0ac247);
+}
+
+.ougc_annbars_brown {
+    border: 1px solid #922626;
+    background: #a52a2a linear-gradient(to bottom, #a52a2a, #a02929, #9b2828, #972727, #922626);
+}
+
+.ougc_annbars_pink {
+    border: 1px solid #ff8fbc;
+    background: #ffa6c9 linear-gradient(to bottom, #ffa6c9, #ffa0c6, #ff9bc3, #ff95bf, #ff8fbc);
+}
+
+.ougc_annbars_orange {
+    border: 1px solid #febf04;
+    background: #ffd65e linear-gradient(to bottom, #ffd65e, #ffd04e, #fecb3d, #fec528, #febf04);
+}
+
+*[class*='ougc_annbars_'] a:link, *[class*='ougc_annbars_'] a:visited, *[class*='ougc_annbars_'] a:hover, *[class*='ougc_annbars_'] a:active {
+    text-decoration: none;
+    color: inherit;
+}
