@@ -2,7 +2,7 @@
 
 /***************************************************************************
  *
- *    OUGC Announcement Bars plugin (/inc/tasks/ougc_annbars.php)
+ *    ougc Announcement Bars plugin (/inc/tasks/ougc_annbars.php)
  *    Author: Omar Gonzalez
  *    Copyright: © 2012 - 2020 Omar Gonzalez
  *
@@ -26,21 +26,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
 
-use function ougc\AnnouncementBars\Core\cacheUpdate;
-use function ougc\AnnouncementBars\Core\languageLoad;
+declare(strict_types=1);
 
-function task_ougc_annbars($task)
+use function ougc\AnnouncementBars\Core\languageLoad;
+use function ougc\AnnouncementBars\Core\executeTask;
+
+function task_ougc_annbars(array $task): void
 {
     global $lang;
-    global $annbars;
-
-    if (!($annbars instanceof OUGC_ANNBARS)) {
-        $annbars = new OUGC_ANNBARS();
-    }
 
     languageLoad();
 
-    cacheUpdate();
+    executeTask();
 
-    add_task_log($task, $lang->task_ougc_annbars_ran);
+    add_task_log($task, $lang->ougcAnnouncementBarsTaskRan);
 }

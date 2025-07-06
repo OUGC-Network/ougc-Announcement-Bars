@@ -6,5 +6,9 @@
   "dismisstime": {
     "optionscode": "numeric",
     "value": 7
+  },
+  "moderatorGroups": {
+    "optionscode": "grouspselect",
+    "value": 4
   }
 }

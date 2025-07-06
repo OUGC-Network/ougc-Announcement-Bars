@@ -27,7 +27,6 @@
 *[class*='ougc_annbars_'] {
     color: #fff;
     padding: 4px;
-    text-align: center;
     -webkit-box-shadow: inset 0 0 1px #FFF;
     -moz-box-shadow: inset 0 0 1px #FFF;
     box-shadow: inset 0 0 1px #FFF;
@@ -69,11 +68,13 @@
 }
 
 .ougc_annbars_pink {
+    color: #000;
     border: 1px solid #ff8fbc;
     background: #ffa6c9 linear-gradient(to bottom, #ffa6c9, #ffa0c6, #ff9bc3, #ff95bf, #ff8fbc);
 }
 
 .ougc_annbars_orange {
+    color: #000;
     border: 1px solid #febf04;
     background: #ffd65e linear-gradient(to bottom, #ffd65e, #ffd04e, #fecb3d, #fec528, #febf04);
 }
@@ -81,4 +82,8 @@
 *[class*='ougc_annbars_'] a:link, *[class*='ougc_annbars_'] a:visited, *[class*='ougc_annbars_'] a:hover, *[class*='ougc_annbars_'] a:active {
     text-decoration: none;
     color: inherit;
+}
+
+.ougcAnnouncementBarsHidden {
+    opacity: 0.6;
 }

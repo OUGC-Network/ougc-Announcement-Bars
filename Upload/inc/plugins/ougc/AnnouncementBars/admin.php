@@ -39,6 +39,12 @@ use const ougc\AnnouncementBars\ROOT;
 use const ougc\AnnouncementBars\Core\VERSION;
 use const ougc\AnnouncementBars\Core\VERSION_CODE;
 
+const TASK_ENABLE = 1;
+
+const TASK_DEACTIVATE = 0;
+
+const TASK_DELETE = -1;
+
 const TABLES_DATA = [
     'ougc_annbars' => [
         'aid' => [
@@ -69,19 +75,9 @@ const TABLES_DATA = [
             'type' => 'TEXT',
             'null' => true,
         ],
-        'visible' => [
-            'type' => 'TINYINT',
-            'unsigned' => true,
-            'default' => 1
-        ],
         'scripts' => [
             'type' => 'TEXT',
             'null' => true,
-        ],
-        'dismissible' => [
-            'type' => 'TINYINT',
-            'unsigned' => true,
-            'default' => 1
         ],
         'frules' => [
             'type' => 'TEXT',
@@ -99,6 +95,16 @@ const TABLES_DATA = [
         ],
         'disporder' => [
             'type' => 'INT',
+            'unsigned' => true,
+            'default' => 1
+        ],
+        'dismissible' => [
+            'type' => 'TINYINT',
+            'unsigned' => true,
+            'default' => 1
+        ],
+        'visible' => [
+            'type' => 'TINYINT',
             'unsigned' => true,
             'default' => 1
         ],
@@ -186,7 +192,7 @@ function pluginActivation(): void
     }
 
     if ($styleSheetContents = file_get_contents(ROOT . '/stylesheet.css')) {
-        $PL->stylesheet('ougc_annbars', $styleSheetContents, 'showthread.php|forumdisplay.php|portal.php|member.php');
+        $PL->stylesheet('ougc_annbars', $styleSheetContents);
     }
 
     // Insert/update version into cache
@@ -218,26 +224,17 @@ function pluginActivation(): void
     }
     */
 
-    if ($plugins['annbars'] <= 1801) {
-        global $annbars;
-
-        $annbars->update_task();
-    }
-
     /*~*~* RUN UPDATES END *~*~*/
+
+    enableTask();
 
     $plugins['annbars'] = $pluginInformation['versioncode'];
 
     $cache->update('ougc_plugins', $plugins);
 
-    // Fill cache
-    global $annbars;
-
     cacheUpdate();
-    $annbars->update_task(1);
 
-    // Update administrator permissions
-    change_admin_permission('forums', 'ougc_annbars');
+    change_admin_permission('forums', 'ougc_annbars', -1);
 }
 
 function pluginIsInstalled(): bool
@@ -257,7 +254,7 @@ function pluginIsInstalled(): bool
     return $isInstalled;
 }
 
-function pluginUninstallation()
+function pluginUninstallation(): void
 {
     global $db, $PL, $cache;
 
@@ -276,6 +273,8 @@ function pluginUninstallation()
 
     $PL->stylesheet_delete('ougc_annbars');
 
+    deleteTask();
+
     // Delete version from cache
     $plugins = (array)$cache->read('ougc_plugins');
 
@@ -290,11 +289,9 @@ function pluginUninstallation()
     }
 
     $cache->delete('ougc_annbars');
-
-    change_admin_permission('forums', 'ougc_annbars', -1);
 }
 
-function pluginLibraryLoad()
+function pluginLibraryLoad(): void
 {
     global $PL, $lang;
 
@@ -320,6 +317,64 @@ function pluginLibraryLoad()
 
         admin_redirect('index.php?module=config-plugins');
     }
+}
+
+function enableTask(int $action = TASK_ENABLE): bool
+{
+    global $db, $lang;
+
+    languageLoad();
+
+    if ($action === TASK_DELETE) {
+        $db->delete_query('tasks', "file='ougc_annbars'");
+
+        return true;
+    }
+
+    $query = $db->simple_select('tasks', '*', "file='ougc_annbars'", ['limit' => 1]);
+
+    $task = $db->fetch_array($query);
+
+    if ($task) {
+        $db->update_query('tasks', ['enabled' => $action], "file='ougc_annbars'");
+    } else {
+        include_once MYBB_ROOT . 'inc/functions_task.php';
+
+        $_ = $db->escape_string('*');
+
+        $new_task = [
+            'title' => $db->escape_string($lang->setting_group_ougc_announcement_bars_rules),
+            'description' => $db->escape_string($lang->setting_group_ougc_announcement_bars_rules_desc),
+            'file' => $db->escape_string('ougc_annbars'),
+            'minute' => 0,
+            'hour' => $_,
+            'day' => $_,
+            'weekday' => $_,
+            'month' => $_,
+            'enabled' => 1,
+            'logging' => 1
+        ];
+
+        $new_task['nextrun'] = fetch_next_run($new_task);
+
+        $db->insert_query('tasks', $new_task);
+    }
+
+    return true;
+}
+
+function disableTask(): bool
+{
+    enableTask(TASK_DEACTIVATE);
+
+    return true;
+}
+
+function deleteTask(): bool
+{
+    enableTask(TASK_DELETE);
+
+    return true;
 }
 
 function dbTables(): array

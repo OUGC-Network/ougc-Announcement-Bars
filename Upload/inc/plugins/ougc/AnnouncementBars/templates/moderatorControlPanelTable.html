@@ -1,0 +1,32 @@
+<table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}"
+       class="tborder">
+    <tr>
+        <td class="thead" colspan="5">
+            <strong>{$lang->ougcAnnouncementBarsModeratorControlPanelTableTitle}</strong>
+        </td>
+    </tr>
+    <tr>
+        <td class="tcat smalltext" width="10%">
+            <strong>{$lang->ougcAnnouncementBarsModeratorControlPanelTableHeaderName}</strong>
+        </td>
+        <td class="tcat smalltext" align="center" width="25%">
+            <strong>{$lang->ougcAnnouncementBarsModeratorControlPanelTableHeaderDisplayGroups}</strong>
+        </td>
+        <td class="tcat smalltext" align="center" width="25%">
+            <strong>{$lang->ougcAnnouncementBarsModeratorControlPanelTableHeaderDisplayForums}</strong>
+        </td>
+        <td class="tcat smalltext" align="center" width="25%">
+            <strong>{$lang->ougcAnnouncementBarsModeratorControlPanelTableHeaderDisplayScripts}</strong>
+        </td>
+        <td class="tcat smalltext" align="center" width="15%">
+            <strong>{$lang->ougcAnnouncementBarsModeratorControlPanelTableHeaderOptions}</strong>
+        </td>
+    </tr>
+    {$announcementsList}
+</table>
+<br/>
+<div class="float_right">
+    <a href="{$mybb->settings['bburl']}/{$newUrl}" class="button new_thread_button">
+        <span style="padding: initial; background-image: initial;">{$lang->ougcAnnouncementBarsModeratorControlPanelButtonNew}</span>
+    </a>
+</div>

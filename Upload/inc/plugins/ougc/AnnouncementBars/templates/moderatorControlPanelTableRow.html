@@ -1,0 +1,24 @@
+<tr>
+    <td class="trow1">
+        {$announcementName}
+    </td>
+    <td class="trow1" align="center">
+        {$displayGroups}
+    </td>
+    <td class="trow1" align="center">
+        {$displayForums}
+    </td>
+    <td class="trow1" align="center">
+        {$displayScripts}
+    </td>
+    <td class="trow1" align="center">
+        <a href="{$mybb->settings['bburl']}/{$editUrl}">{$lang->ougcAnnouncementBarsModeratorControlPanelTableHeaderOptionsEdit}</a>
+        |
+        <a href="{$mybb->settings['bburl']}/{$deleteUrl}" onclick="return confirm('Press a button!')">{$lang->ougcAnnouncementBarsModeratorControlPanelTableHeaderOptionsDelete}</a>
+    </td>
+</tr>
+<tr>
+    <td class="trow2" align="center" colspan="6">
+        {$announcementBar}
+    </td>
+</tr>

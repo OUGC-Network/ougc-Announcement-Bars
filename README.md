@@ -4,7 +4,7 @@
     </a>
 </p>
 
-<h3 align="center">OUGC Announcement Bars</h3>
+<h3 align="center">ougc Announcement Bars</h3>
 
 <div align="center">
 
@@ -96,21 +96,43 @@ Follow the next steps in order to update your copy of this plugin.
 To display the announcements bars it is required that you edit the following template for each of your themes.
 
 1. Place `<!--OUGC_ANNBARS-->` after `<navigation>` in the `header` template.
-
-Alternatively, it is possible to place this code in almost any template to display the announcement bars.
+   Alternatively, it is possible to place this code in almost any template to display the announcement bars.
+2. Place `<!--ougcAnnouncementBarsModeratorControlPanel-->` after `{$nav_modlogs}` in the `modcp_nav_forums_posts`
+   template to display the moderator control panel link.
 
 [Go up to Table of Contents](#table_of_contents)
 
 ## 📖 Usage <a name="usage"></a>
 
-### Announcement Bars
+### Display Rules
 
-Read the following description to understand and design your custom announcement bars.
+Custom display rules are an advanced feature that allow you to filter the display of announcement bars or render dynamic
+values within their messages.
 
-1. Go to the Administrator Control Panel, add or update a group promotion from _Home » Forums & Posts » Announcement
-   Bars_.
-2. Click on the _Add_ button to create a new announcement bar or click on the _Options -> Edit_ button to update
-   an existing one.
+Below is a JSON format list of conditionals to manipulate the display of this announcement bars.
+
+#### Filter based on thread count
+
+Only display the announcement bar if the thread count from forums `1` and `2`, counting only approved (visible) threads,
+from the last `30` days, is greater than `0`.
+
+```JSON
+{
+  "threadCountRule": {
+    "forumIDs": [1, 2],
+    "closedThreads": false,
+    "visibleThreads": true,
+    "unapprovedThreads": false,
+    "deletedThreads": false,
+    "createDaysCut": 30,
+    "displayComparisonOperator": ">",
+    "displayComparisonValue": 0,
+    "displayKey": "exampleCounter"
+  }
+}
+```
+
+You can now use `{exampleCounter}` inside "Message" to display the count result.
 
 [Go up to Table of Contents](#table_of_contents)
 

@@ -1,0 +1,246 @@
+{$errorMessages}
+{$preview}
+<form action="{$mybb->settings['bburl']}/{$pageUrl}" method="post">
+    <table border="0" cellspacing="{$theme['borderwidth']}" cellpadding="{$theme['tablespace']}" class="tborder">
+        <tr>
+            <td class="thead" colspan="6"><strong>{$tableTitle}</strong></td>
+        </tr>
+        <tr>
+            <td class="trow1" valign="top" width="25%">
+                <strong>{$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderName}:</strong>
+                <div class="smalltext">
+                    {$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderNameDescription}
+                </div>
+            </td>
+            <td class="trow1" valign="top">
+                <input type="text" class="textbox" name="name" size="40" value="{$inputData['name']}"/>
+            </td>
+        </tr>
+        <tr>
+            <td class="trow1" valign="top" width="25%">
+                <strong>{$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderMessage}:</strong>
+                <div class="smalltext">
+                    {$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderMessageDescription}
+                </div>
+            </td>
+            <td class="trow1" valign="top">
+                <textarea id="message" name="content" rows="20" cols="70">{$inputData['message']}</textarea>
+                {$codeButtons}
+            </td>
+        </tr>
+        <tr>
+            <td class="trow1" valign="top" width="25%">
+                <strong>{$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderStyleClass}:</strong>
+                <div class="smalltext">
+                    {$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderStyleClassDescription}
+                </div>
+            </td>
+            <td class="trow1" valign="top">
+                <fieldset>
+                    <legend>{$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderStylePredefined}</legend>
+                    <label>
+                        <input type="radio" name="styleClassType" value="1" {$checkedElementStyleClassPredefined}
+                               class="styleClassTypeInput"
+                               onclick="ougcAnnouncementBars.checkAction('styleClassType');"/>
+                        {$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderStylePredefined}
+                    </label>
+                    <div id="styleClassType1" class="styleClassTypeDefinition">
+                        {$styleClassSelect}
+                    </div>
+                    <br/>
+                    <label>
+                        <input type="radio" name="styleClassType" value="2" {$checkedElementStyleClassCustom}
+                               class="styleClassTypeInput"
+                               onclick="ougcAnnouncementBars.checkAction('styleClassType');"/>
+                        {$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderStyleClassCustom}
+                    </label>
+                    <div id="styleClassType2" class="styleClassTypeDefinition">
+                        <input type="text" class="textbox" name="styleClassCustom" size="20"
+                               value="{$inputData['styleClassCustom']}"/>
+                    </div>
+                </fieldset>
+                <script type="text/javascript">
+                    ougcAnnouncementBars.checkAction('styleClassType');
+                </script>
+            </td>
+        </tr>
+        <tr>
+            <td class="trow1" valign="top" width="25%">
+                <strong>{$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderDisplayGroups}:</strong>
+                <div class="smalltext">
+                    {$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderDisplayGroupsDescription}
+                </div>
+            </td>
+            <td class="trow1" valign="top">
+                <fieldset>
+                    <legend>{$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderStylePredefined}</legend>
+                    <label>
+                        <input type="radio" name="displayGroupsType" value="1" {$checkedElementDisplayGroupsAll}
+                               class="displayGroupsTypeInput"
+                               onclick="ougcAnnouncementBars.checkAction('displayGroupsType');"/>
+                        {$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderDisplayGroupsAll}
+                    </label>
+                    <br/>
+                    <label>
+                        <input type="radio" name="displayGroupsType" value="2" {$checkedElementDisplayGroupsCustom}
+                               class="displayGroupsTypeInput"
+                               onclick="ougcAnnouncementBars.checkAction('displayGroupsType');"/>
+                        {$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderDisplayGroupsCustom}
+                    </label>
+                    <div id="displayGroupsType2" class="displayGroupsTypeDefinition">
+                        {$displayGroupsSelect}
+                    </div>
+                    <br/>
+                    <label>
+                        <input type="radio" name="displayGroupsType" value="3" {$checkedElementDisplayGroupsNone}
+                               class="displayGroupsTypeInput"
+                               onclick="ougcAnnouncementBars.checkAction('displayGroupsType');"/>
+                        {$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderDisplayGroupsNone}
+                    </label>
+                </fieldset>
+                <script type="text/javascript">
+                    ougcAnnouncementBars.checkAction('displayGroupsType');
+                </script>
+            </td>
+        </tr>
+        <tr>
+            <td class="trow1" valign="top" width="25%">
+                <strong>{$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderDisplayForums}:</strong>
+                <div class="smalltext">
+                    {$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderDisplayForumsDescription}
+                </div>
+            </td>
+            <td class="trow1" valign="top">
+                <fieldset>
+                    <legend>{$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderStylePredefined}</legend>
+                    <label>
+                        <input type="radio" name="displayForumsType" value="1" {$checkedElementDisplayForumsAll}
+                               class="displayForumsTypeInput"
+                               onclick="ougcAnnouncementBars.checkAction('displayForumsType');"/>
+                        {$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderDisplayForumsAll}
+                    </label>
+                    <br/>
+                    <label>
+                        <input type="radio" name="displayForumsType" value="2" {$checkedElementDisplayForumsCustom}
+                               class="displayForumsTypeInput"
+                               onclick="ougcAnnouncementBars.checkAction('displayForumsType');"/>
+                        {$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderDisplayForumsCustom}
+                    </label>
+                    <div id="displayForumsType2" class="displayForumsTypeDefinition">
+                        {$displayForumsSelect}
+                    </div>
+                    <br/>
+                    <label>
+                        <input type="radio" name="displayForumsType" value="3" {$checkedElementDisplayForumsNone}
+                               class="displayForumsTypeInput"
+                               onclick="ougcAnnouncementBars.checkAction('displayForumsType');"/>
+                        {$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderDisplayForumsNone}
+                    </label>
+                </fieldset>
+                <script type="text/javascript">
+                    ougcAnnouncementBars.checkAction('displayForumsType');
+                </script>
+            </td>
+        </tr>
+        <tr>
+            <td class="trow1" valign="top" width="25%">
+                <strong>{$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderDisplayScripts}:</strong>
+                <div class="smalltext">
+                    {$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderDisplayScriptsDescription}
+                </div>
+            </td>
+            <td class="trow1" valign="top">
+                <textarea name="scripts" rows="5" cols="40"
+                          title="{$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderDisplayScriptsCustomPlaceholder}"
+                          placeholder="{$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderDisplayScriptsCustomPlaceholder}">{$inputData['scripts']}</textarea>
+            </td>
+        </tr>
+        <tr>
+            <td class="trow1" valign="top" width="25%">
+                <strong>{$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderStartDate}:</strong>
+                <div class="smalltext">
+                    {$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderStartDateDescription}
+                </div>
+            </td>
+            <td class="trow1" valign="top">
+                <input type="date" class="textbox" name="startdate" value="{$inputData['startDate']}"/>
+            </td>
+        </tr>
+        <tr>
+            <td class="trow1" valign="top" width="25%">
+                <strong>{$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderEndDate}:</strong>
+                <div class="smalltext">
+                    {$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderEndDateDescription}
+                </div>
+            </td>
+            <td class="trow1" valign="top">
+                <input type="date" class="textbox" name="enddate" value="{$inputData['endDate']}"/>
+            </td>
+        </tr>
+        <tr>
+            <td class="trow1" valign="top" width="25%">
+                <strong>{$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderDisplayRules}:</strong>
+                <div class="smalltext">
+                    {$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderDisplayRulesDescription}
+                </div>
+            </td>
+            <td class="trow1" valign="top">
+                <textarea name="frules" rows="15" cols="70">{$inputData['displayRules']}</textarea>
+            </td>
+        </tr>
+        <tr>
+            <td class="trow1" valign="top" width="25%">
+                <strong>{$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderDisplayOrder}:</strong>
+                <div class="smalltext">
+                    {$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderDisplayOrderDescription}
+                </div>
+            </td>
+            <td class="trow1" valign="top">
+                <input type="number" class="textbox" name="disporder" value="{$inputData['displayOrder']}" min="0"/>
+            </td>
+        </tr>
+        <tr>
+            <td class="trow1" valign="top" width="25%">
+                <strong>{$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderAllowDismissal}:</strong>
+                <div class="smalltext">
+                    {$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderAllowDismissalDescription}
+                </div>
+            </td>
+            <td class="trow1" valign="top">
+                <label>
+                    <input type="radio" name="dismissible" value="0" {$checkedElementAllowDismissalNo}/>&nbsp;{$lang->no}
+                </label>
+                &nbsp;&nbsp;
+                <label>
+                    <input type="radio" name="dismissible" value="1" {$checkedElementAllowDismissalYes}/>&nbsp;{$lang->yes}
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td class="trow1" valign="top" width="25%">
+                <strong>{$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderEnabled}:</strong>
+                <div class="smalltext">
+                    {$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderEnabledDescription}
+                </div>
+            </td>
+            <td class="trow1" valign="top">
+                <label>
+                    <input type="radio" name="visible" value="0" {$checkedElementAllowEnabledNo}/>&nbsp;{$lang->no}
+                </label>
+                &nbsp;&nbsp;
+                <label>
+                    <input type="radio" name="visible" value="1" {$checkedElementAllowEnabledYes}/>&nbsp;{$lang->yes}
+                </label>
+            </td>
+        </tr>
+    </table>
+    <br/>
+    <div align="center">
+        <input type="submit" class="button" value="{$buttonText}"/>&nbsp;&nbsp;
+        <input type="submit" class="button" name="preview" value="{$lang->preview}"/>
+    </div>
+    <input type="hidden" name="action" value="{$pageAction}"/>
+    <input type="hidden" name="manage" value="{$mybb->input['manage']}"/>
+    <input type="hidden" name="my_post_key" value="{$mybb->post_code}"/>
+    <input type="hidden" name="announcementID" value="{$announcementID}"/>
+</form>

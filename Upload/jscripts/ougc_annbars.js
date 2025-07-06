@@ -1,6 +1,6 @@
 /***************************************************************************
  *
- *    OUGC Announcement Bars plugin (/jscripts/ougc_annbars.js)
+ *    ougc Announcement Bars plugin (/jscripts/ougc_annbars.js)
  *    Author: Omar Gonzalez
  *    Copyright: © 2012 - 2020 Omar Gonzalez
  *
@@ -52,3 +52,30 @@ $.extend(true, OUGC_Plugins, {
 });
 
 OUGC_Plugins.initAnnoucementBarsSystem();
+
+const ougcAnnouncementBars = {
+    checkAction: function (identifier) {
+        let checked = '';
+
+        const InputElements = document.querySelectorAll('.' + identifier + 'Input');
+
+        InputElements.forEach(InputElement => {
+            if (InputElement.checked) {
+                checked = document.querySelector('.' + identifier + 'Input:checked').value;
+            }
+        })
+
+        const InputDefinitions = document.querySelectorAll('.' + identifier + 'Definition');
+
+        InputDefinitions.forEach(InputElement => {
+            InputElement.style.display = 'none';
+        })
+
+        const CheckedDefinition = document.getElementById(identifier + checked);
+        console.log([identifier, checked, identifier + checked]);
+
+        if (CheckedDefinition) {
+            CheckedDefinition.style.display = '';
+        }
+    }
+};
