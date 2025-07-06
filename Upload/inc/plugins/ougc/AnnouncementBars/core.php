@@ -131,11 +131,6 @@ function urlHandler(string $newUrl = ''): string
     return $setUrl;
 }
 
-function urlHandlerSet(string $newUrl): void
-{
-    urlHandler($newUrl);
-}
-
 function urlHandlerGet(): string
 {
     return urlHandler();
@@ -264,7 +259,7 @@ function announcementGet(array $whereClauses, array $queryFields = [], array $qu
     return $announcementObjects;
 }
 
-function cacheUpdate(): void
+function cacheUpdate(): array
 {
     global $cache;
 
@@ -274,19 +269,33 @@ function cacheUpdate(): void
         return $announcementData;
     },
         announcementGet(
-            ["startdate<'{$timeNow}'", "enddate>='{$timeNow}'", "visible='1'"],
+            [
+                "(startdate<'{$timeNow}' OR startdate='' OR startdate='0')",
+                "(enddate>='{$timeNow}' OR enddate='' OR enddate='0')",
+                "visible='1'",
+                "groups!=''",
+                'groups IS NOT NULL',
+            ],
             ['aid', 'content', 'style', 'groups', 'forums', 'scripts', 'frules', 'startdate', 'enddate', 'dismissible'],
             ['order_by' => 'disporder']
         ));
 
     $cache->update('ougc_annbars', $cacheData);
+
+    return $cacheData;
 }
 
 function cacheGet(): array
 {
     global $mybb;
 
-    return $mybb->cache->read('ougc_annbars') ?? [];
+    $cacheData = $mybb->cache->read('ougc_annbars') ?? [];
+
+    if (!$cacheData || DEBUG) {
+        $cacheData = cacheUpdate();
+    }
+
+    return $cacheData;
 }
 
 function parseMessage(string $message, array $parserOptions = []): string
@@ -326,8 +335,12 @@ function announcementBuildJavaScript(): string
     return eval(getTemplate('globalJavaScript'));
 }
 
-function announcementBuildBar(array $announcementData, int $announcementID, bool $addIdentifier = true): string
-{
+function announcementBuildBar(
+    array $announcementData,
+    int $announcementID,
+    bool $addIdentifier = true,
+    array $replacementParams = []
+): string {
     global $mybb, $lang;
     global $theme;
 
@@ -353,15 +366,7 @@ function announcementBuildBar(array $announcementData, int $announcementID, bool
         $announcementMessage = $lang->{$lang_val};
     }
 
-    if (!empty($replacementParams)) {
-        $announcementMessage = str_replace(
-            array_keys($replacementParams),
-            array_values($replacementParams),
-            $announcementMessage
-        );
-    }
-
-    $replacements = [
+    $replacementParams = array_merge($replacementParams, [
         '{1}' => $mybb->user['username'],
         '{username}' => $mybb->user['username'],
         '{2}' => $mybb->settings['bbname'],
@@ -376,10 +381,10 @@ function announcementBuildBar(array $announcementData, int $announcementID, bool
             my_date($mybb->settings['dateformat'], $announcementData['enddate']) : $announcementData['enddate'],
         '{end_date}' => is_numeric($announcementData['enddate']) ?
             my_date($mybb->settings['dateformat'], $announcementData['enddate']) : $announcementData['enddate'],
-    ];
+    ]);
 
     $announcementMessage = parseMessage(
-        str_replace(array_keys($replacements), array_values($replacements), $announcementMessage)
+        str_replace(array_keys($replacementParams), array_values($replacementParams), $announcementMessage)
     );
 
     $hiddenStyleClass = '';

@@ -39,6 +39,7 @@ use function ougc\AnnouncementBars\Core\announcementDelete;
 use function ougc\AnnouncementBars\Core\announcementGet;
 use function ougc\AnnouncementBars\Core\announcementInsert;
 use function ougc\AnnouncementBars\Core\announcementUpdate;
+use function ougc\AnnouncementBars\Core\cacheGet;
 use function ougc\AnnouncementBars\Core\cacheUpdate;
 use function ougc\AnnouncementBars\Core\executeTask;
 use function ougc\AnnouncementBars\Core\getSetting;
@@ -89,348 +90,336 @@ function pre_output_page(string &$pageContents): string
 
     global $mybb, $theme;
 
-    $announcementsLimit = getSetting('limit');
+    $announcementsLimit = (int)getSetting('limit');
 
-    if (!$announcementsLimit) {
+    if ($announcementsLimit < 0) {
         return $pageContents;
     }
 
-    $bars = $mybb->cache->read('ougc_annbars');
+    $announcementObjects = cacheGet();
 
-    $announcementsList = '';
+    if (!$announcementObjects) {
+        return $pageContents;
+    }
 
-    if (is_array($bars)) {
-        global $lang, $templates;
+    global $lang;
 
-        languageLoad();
+    languageLoad();
 
-        $username = $lang->guest;
+    $forumID = 0;
 
-        if (!empty($mybb->user['username'])) {
-            $username = $mybb->user['username'];
+    switch (THIS_SCRIPT) {
+        // $fid
+        case 'announcements.php':
+        case 'editpost.php':
+        case 'forumdisplay.php':
+        case 'newreply.php':
+        case 'newthread.php':
+        case 'printthread.php':
+        case 'showthread.php':
+        case 'ratethread.php':
+        case 'moderation.php':
+            // $forum
+        case 'polls.php':
+        case 'sendthread.php':
+        case 'report.php':
+            // $mybb
+        case 'misc.php':
+            global $fid, $forum;
+
+            empty($fid) || $forumID = (int)$fid;
+
+            empty($forum['fid']) || $forumID = (int)$forum['fid'];
+
+            empty($mybb->input['fid']) || $forumID = $mybb->get_input('fid', MyBB::INPUT_INT);
+
+            break;
+    }
+
+    if (!empty($_SERVER['PATH_INFO'])) {
+        $currentScript = $_SERVER['PATH_INFO'];
+    } elseif (!empty($_ENV['PATH_INFO'])) {
+        $currentScript = $_ENV['PATH_INFO'];
+    } elseif (!empty($_ENV['PHP_SELF'])) {
+        $currentScript = $_ENV['PHP_SELF'];
+    } elseif (defined('THIS_SCRIPT')) {
+        $currentScript = THIS_SCRIPT;
+    } else {
+        $currentScript = $_SERVER['PHP_SELF'];
+    }
+
+    $currentScript = my_strtolower(basename($currentScript));
+
+    $announcementsList = [];
+
+    foreach ($announcementObjects as $announcementID => $announcementData) {
+        if (!is_member($announcementData['groups']) || (
+                $forumID && (
+                    empty($announcementData['forums']) ||
+                    !is_member($announcementData['forums'], ['usergroup' => $forumID, 'additionalgroups' => ''])
+                )
+            )) {
+            continue;
         }
 
-        $fid = false;
+        if (!empty($announcementData['scripts'])) {
+            $validScript = false;
 
-        switch (THIS_SCRIPT) {
-            // $fid
-            case 'announcements.php':
-            case 'editpost.php':
-            case 'forumdisplay.php':
-            case 'newreply.php':
-            case 'newthread.php':
-            case 'printthread.php':
-            case 'showthread.php':
-            case 'ratethread.php':
-            case 'moderation.php':
-                // $forum
-            case 'polls.php':
-            case 'sendthread.php':
-            case 'report.php':
-                // $mybb
-            case 'misc.php':
-                global $fid, $forum;
+            foreach (array_map('trim', explode("\n", $announcementData['scripts'])) as $scriptName) {
+                if (my_strpos($scriptName, '{|}') !== false) {
+                    $scriptInputs = explode('{|}', $scriptName);
 
-                !empty($fid) || $fid = $forum['fid'];
+                    $scriptName = $scriptInputs[0];
 
-                !empty($fid) || $fid = $mybb->get_input('fid', 1);
-
-                break;
-        }
-
-        $fid = (int)$fid;
-
-        if (!empty($_SERVER['PATH_INFO'])) {
-            $location = htmlspecialchars_uni($_SERVER['PATH_INFO']);
-        } elseif (!empty($_ENV['PATH_INFO'])) {
-            $location = htmlspecialchars_uni($_ENV['PATH_INFO']);
-        } elseif (!empty($_ENV['PHP_SELF'])) {
-            $location = htmlspecialchars_uni($_ENV['PHP_SELF']);
-        } else {
-            $location = htmlspecialchars_uni($_SERVER['PHP_SELF']);
-        }
-
-        $count = 1;
-
-        foreach ($bars as $announcementID => $announcementData) {
-            if ($announcementsLimit != 0 && $count > $announcementsLimit) {
-                break;
-            }
-
-            if (!$announcementData['groups'] || ($announcementData['groups'] != -1 && !is_member(
-                        $announcementData['groups']
-                    ))) {
-                continue;
-            }
-
-            if (!$announcementData['visible']) {
-                $valid_forum = false;
-
-                if ($announcementData['forums'] && $fid) {
-                    if ($announcementData['forums'] == -1 || my_strpos(
-                            ',' . $announcementData['forums'] . ',',
-                            ',' . $fid . ','
-                        ) !== false) {
-                        $valid_forum = true;
-                    }
+                    $scriptInputs = explode('|', $scriptInputs[1]);
                 }
 
-                if ($announcementData['scripts'] && !$valid_forum) {
-                    $continue = true;
-                    $scripts = explode("\n", $announcementData['scripts']);
-                    foreach ($scripts as $script) {
-                        if (my_strpos($script, '{|}') !== false) {
-                            $inputs = explode('{|}', $script);
-                            $script = $inputs[0];
-                            $inputs = explode('|', $inputs[1]);
-                        }
-
-                        if (my_strtolower($script) != my_strtolower(basename($location))) {
-                            continue;
-                        }
-
-                        $continue = false;
-
-                        if ($inputs) {
-                            foreach ($inputs as $key) {
-                                if (my_strpos($key, '=') !== false) {
-                                    $key = explode('=', $key);
-                                    $value = $key[1];
-                                    $key = $key[0];
-                                }
-
-                                if (isset($mybb->input[$key])) {
-                                    $continue = false;
-
-                                    if ($mybb->get_input($key) == (string)$value) {
-                                        $continue = false;
-                                        break;
-                                    }
-
-                                    $continue = false;
-                                } else {
-                                    $continue = true;
-                                }
-                            }
-                        }
-                    }
-
-                    if ($continue) {
-                        continue;
-                    }
+                if (my_strtolower($scriptName) !== $currentScript) {
+                    continue;
                 }
-                //foo.php|foo.php?value|foo.php?value,value
-                //foo.php{|}key|key=value
-            }
 
-            if ($fid && $announcementData['forums'] != -1 && ($announcementData['forums'] == '' || my_strpos(
-                        ',' . $announcementData['forums'] . ',',
-                        ',' . $fid . ','
-                    ) === false)) {
-                continue;
-            }
+                if (empty($scriptInputs)) {
+                    $validScript = true;
+                } else {
+                    foreach ($scriptInputs as $param) {
+                        if (my_strpos($param, '=') !== false) {
+                            list($paramName, $paramValue) = explode('=', $param, 2);
 
-            ++$count;
-
-            $replacementParams = [];
-
-            $displayBar = true;
-
-            if ($announcementData['frules']) {
-                global $db;
-
-                $whereClauses = [];
-
-                $rulesScripts = json_decode($announcementData['frules'], true);
-
-                if (!empty($rulesScripts)) {
-                    if (isset($rulesScripts['threadCountRules']) || isset($rulesScripts['threadCountRule'])) {
-                        $threadCountRules = isset($rulesScripts['threadCountRules']) ? $rulesScripts['threadCountRules'] : [$rulesScripts['threadCountRule']];
-
-                        foreach ($threadCountRules as $threadCountRule) {
-                            if (isset($threadCountRule['forumIDs'])) {
-                                $forumIDs = implode("','", array_map('intval', $threadCountRule['forumIDs']));
-
-                                $whereClauses[] = "fid IN ('{$forumIDs}')";
+                            if (str_contains($paramValue, ',')) {
+                                $paramValue = explode(',', $paramValue);
                             }
+                        } else {
+                            $paramName = $param;
+                        }
 
-                            $prefixNot = '';
+                        if (!isset($paramValue) && isset($mybb->input[$paramName])) {
+                            $validScript = true;
+                        } elseif (!empty($paramValue) && (
+                                (!is_array($paramValue) && $mybb->get_input($paramName) === $paramValue) ||
+                                (is_array($paramValue) && in_array($mybb->get_input($paramName), $paramValue))
+                            )) {
+                            $validScript = true;
+                        }
 
-                            if (isset($threadCountRule['hasPrefix'])) {
-                                if ($threadCountRule['hasPrefix'] === true) {
-                                    $whereClauses['prefix'] = "prefix>'0'";
-                                } else {
-                                    $whereClauses['prefix'] = "prefix='0'";
-
-                                    $prefixNot = 'NOT';
-                                }
-                            }
-
-                            if (isset($threadCountRule['prefixIDs'])) {
-                                $prefixIDs = implode("','", array_map('intval', $threadCountRule['prefixIDs']));
-
-                                $whereClauses['prefix'] = "prefix {$prefixNot} IN ('{$prefixIDs}')";
-                            }
-
-                            if (isset($threadCountRule['hasPoll'])) {
-                                if ($threadCountRule['hasPoll'] === true) {
-                                    $whereClauses[] = "poll='1'";
-                                } else {
-                                    $whereClauses[] = "poll='0'";
-                                }
-                            }
-
-                            if (isset($threadCountRule['createDaysCut'])) {
-                                $createDaysStamp = TIME_NOW - 60 * 60 * 24 * 7 * (int)$threadCountRule['createDaysCut'];
-
-                                $whereClauses[] = "dateline>'{$createDaysStamp}'";
-                            }
-
-                            $repliesOperator = '>';
-
-                            if (isset($threadCountRule['hasReplies'])) {
-                                if ($threadCountRule['hasReplies'] === true) {
-                                    $whereClauses['replies'] = "replies>'0'";
-                                } else {
-                                    $whereClauses['replies'] = "replies='0'";
-
-                                    $repliesOperator = '<';
-                                }
-                            }
-
-                            if (isset($threadCountRule['hasRepliesCount'])) {
-                                $hasRepliesCount = (int)$threadCountRule['hasRepliesCount'];
-
-                                $whereClauses['replies'] = "replies{$repliesOperator}'{$hasRepliesCount}'";
-                            }
-
-                            if (isset($threadCountRule['closedThreads'])) {
-                                if ($threadCountRule['closedThreads'] === true) {
-                                    $whereClauses[] = "closed='1'";
-                                } else {
-                                    $whereClauses[] = "closed NOT LIKE 'moved|%'";
-                                }
-                            }
-
-                            if (isset($threadCountRule['stuckThreads'])) {
-                                if ($threadCountRule['stuckThreads'] === true) {
-                                    $whereClauses[] = "sticky='1'";
-                                } else {
-                                    $whereClauses[] = "sticky='0'";
-                                }
-                            }
-
-                            $visibleStatuses = ['in' => [], 'inNot' => []];
-
-                            if (isset($threadCountRule['visibleThreads'])) {
-                                if ($threadCountRule['visibleThreads'] === true) {
-                                    $visibleStatuses['in'][] = 1;
-                                } else {
-                                    $visibleStatuses['notIn'][] = 1;
-                                }
-                            }
-
-                            if (isset($threadCountRule['unapprovedThreads'])) {
-                                if ($threadCountRule['unapprovedThreads'] === true) {
-                                    $visibleStatuses['in'][] = 0;
-                                } else {
-                                    $visibleStatuses['notIn'][] = 0;
-                                }
-                            }
-
-                            if (isset($threadCountRule['deletedThreads'])) {
-                                if ($threadCountRule['deletedThreads'] === true) {
-                                    $visibleStatuses['in'][] = -1;
-                                } else {
-                                    $visibleStatuses['notIn'][] = -1;
-                                }
-                            }
-
-                            if (!empty($visibleStatuses)) {
-                                if (!empty($visibleStatuses['in'])) {
-                                    $inString = implode("','", $visibleStatuses['in']);
-
-                                    $whereClauses[] = "visible IN ('{$inString}')";
-                                }
-
-                                if (!empty($visibleStatuses['notIn'])) {
-                                    $notInString = implode("','", $visibleStatuses['notIn']);
-
-                                    $whereClauses[] = "visible NOT IN ('{$notInString}')";
-                                }
-                            }
-
-                            if (function_exists(
-                                    'ougc_showinportal_info'
-                                ) && isset($threadCountRule['showInPortal'])) {
-                                if ($threadCountRule['showInPortal'] === true) {
-                                    $whereClauses[] = "showinportal='1'";
-                                } else {
-                                    $whereClauses[] = "showinportal='0'";
-                                }
-                            }
-
-                            $dbQuery = $db->simple_select(
-                                'threads',
-                                'COUNT(tid) AS total_threads',
-                                implode(' AND ', $whereClauses)
-                            );
-
-                            $queryResult = (int)$db->fetch_field($dbQuery, 'total_threads');
-
-                            if (isset($threadCountRule['displayComparisonOperator'])) {
-                                $displayComparisonValue = isset($threadCountRule['displayComparisonValue']) ? $threadCountRule['displayComparisonValue'] : 1;
-
-                                switch ($threadCountRule['displayComparisonOperator']) {
-                                    case '<':
-                                        if (!($queryResult < $displayComparisonValue)) {
-                                            $displayBar = false;
-                                        }
-                                        break;
-                                    case '>':
-                                        if (!($queryResult > $displayComparisonValue)) {
-                                            $displayBar = false;
-                                        }
-                                        break;
-                                }
-
-                                $replacementParams["{$threadCountRule['displayKey']}"] = my_number_format(
-                                    $queryResult
-                                );
-                            } elseif (!$queryResult) {
-                                $displayBar = false;
-                            }
-
-                            if (isset($threadCountRule['displayKey']) && my_strlen(
-                                    $threadCountRule['displayKey']
-                                ) > 2) {
-                                $replacementParams["{{$threadCountRule['displayKey']}}"] = my_number_format(
-                                    $queryResult
-                                );
-                            }
-
-                            // we only allow single forum rule for the time being
+                        if ($validScript) {
                             break;
                         }
                     }
                 }
+
+                if ($validScript) {
+                    break;
+                }
             }
 
-            if (!$displayBar) {
+            if (!$validScript) {
                 continue;
             }
+        }
+        //script_name.php{|}param_name=param_value1,param_value2|param_name=param_value
+        //script_name.php{|}param_name|param_name=param_value
 
-            $announcementBar = announcementBuildBar($announcementData, $announcementID);
+        $replacementParams = [];
 
-            $announcementsList .= eval(getTemplate('globalAnnouncements'));
+        $displayBar = true;
+
+        if (!empty($announcementData['frules']) && $rulesScripts = json_decode($announcementData['frules'], true)) {
+            global $db;
+
+            $whereClauses = [];
+
+            if (isset($rulesScripts['threadCountRules']) || isset($rulesScripts['threadCountRule'])) {
+                $threadCountRules = $rulesScripts['threadCountRules'] ?? [$rulesScripts['threadCountRule']];
+
+                foreach ($threadCountRules as $threadCountRule) {
+                    if (isset($threadCountRule['forumIDs'])) {
+                        $forumIDs = implode("','", array_map('intval', $threadCountRule['forumIDs']));
+
+                        $whereClauses[] = "fid IN ('{$forumIDs}')";
+                    }
+
+                    $prefixNot = '';
+
+                    if (isset($threadCountRule['hasPrefix'])) {
+                        if ($threadCountRule['hasPrefix'] === true) {
+                            $whereClauses['prefix'] = "prefix>'0'";
+                        } else {
+                            $whereClauses['prefix'] = "prefix='0'";
+
+                            $prefixNot = 'NOT';
+                        }
+                    }
+
+                    if (isset($threadCountRule['prefixIDs'])) {
+                        $prefixIDs = implode("','", array_map('intval', $threadCountRule['prefixIDs']));
+
+                        $whereClauses['prefix'] = "prefix {$prefixNot} IN ('{$prefixIDs}')";
+                    }
+
+                    if (isset($threadCountRule['hasPoll'])) {
+                        if ($threadCountRule['hasPoll'] === true) {
+                            $whereClauses[] = "poll='1'";
+                        } else {
+                            $whereClauses[] = "poll='0'";
+                        }
+                    }
+
+                    if (isset($threadCountRule['createDaysCut'])) {
+                        $createDaysStamp = TIME_NOW - 60 * 60 * 24 * 7 * (int)$threadCountRule['createDaysCut'];
+
+                        $whereClauses[] = "dateline>'{$createDaysStamp}'";
+                    }
+
+                    $repliesOperator = '>';
+
+                    if (isset($threadCountRule['hasReplies'])) {
+                        if ($threadCountRule['hasReplies'] === true) {
+                            $whereClauses['replies'] = "replies>'0'";
+                        } else {
+                            $whereClauses['replies'] = "replies='0'";
+
+                            $repliesOperator = '<';
+                        }
+                    }
+
+                    if (isset($threadCountRule['hasRepliesCount'])) {
+                        $hasRepliesCount = (int)$threadCountRule['hasRepliesCount'];
+
+                        $whereClauses['replies'] = "replies{$repliesOperator}'{$hasRepliesCount}'";
+                    }
+
+                    if (isset($threadCountRule['closedThreads'])) {
+                        if ($threadCountRule['closedThreads'] === true) {
+                            $whereClauses[] = "closed='1'";
+                        } else {
+                            $whereClauses[] = "closed NOT LIKE 'moved|%'";
+                        }
+                    }
+
+                    if (isset($threadCountRule['stuckThreads'])) {
+                        if ($threadCountRule['stuckThreads'] === true) {
+                            $whereClauses[] = "sticky='1'";
+                        } else {
+                            $whereClauses[] = "sticky='0'";
+                        }
+                    }
+
+                    $visibleStatuses = ['in' => [], 'inNot' => []];
+
+                    if (isset($threadCountRule['visibleThreads'])) {
+                        if ($threadCountRule['visibleThreads'] === true) {
+                            $visibleStatuses['in'][] = 1;
+                        } else {
+                            $visibleStatuses['notIn'][] = 1;
+                        }
+                    }
+
+                    if (isset($threadCountRule['unapprovedThreads'])) {
+                        if ($threadCountRule['unapprovedThreads'] === true) {
+                            $visibleStatuses['in'][] = 0;
+                        } else {
+                            $visibleStatuses['notIn'][] = 0;
+                        }
+                    }
+
+                    if (isset($threadCountRule['deletedThreads'])) {
+                        if ($threadCountRule['deletedThreads'] === true) {
+                            $visibleStatuses['in'][] = -1;
+                        } else {
+                            $visibleStatuses['notIn'][] = -1;
+                        }
+                    }
+
+                    if (!empty($visibleStatuses)) {
+                        if (!empty($visibleStatuses['in'])) {
+                            $inString = implode("','", $visibleStatuses['in']);
+
+                            $whereClauses[] = "visible IN ('{$inString}')";
+                        }
+
+                        if (!empty($visibleStatuses['notIn'])) {
+                            $notInString = implode("','", $visibleStatuses['notIn']);
+
+                            $whereClauses[] = "visible NOT IN ('{$notInString}')";
+                        }
+                    }
+
+                    if (function_exists('ougc_showinportal_info') && isset($threadCountRule['showInPortal'])) {
+                        if ($threadCountRule['showInPortal'] === true) {
+                            $whereClauses[] = "showinportal='1'";
+                        } else {
+                            $whereClauses[] = "showinportal='0'";
+                        }
+                    }
+
+                    $dbQuery = $db->simple_select(
+                        'threads',
+                        'COUNT(tid) AS total_threads',
+                        implode(' AND ', $whereClauses)
+                    );
+
+                    $queryResult = (int)$db->fetch_field($dbQuery, 'total_threads');
+
+                    if (isset($threadCountRule['displayComparisonOperator'])) {
+                        $displayComparisonValue = $threadCountRule['displayComparisonValue'] ?? 1;
+
+                        switch ($threadCountRule['displayComparisonOperator']) {
+                            case '<':
+                                if (!($queryResult < $displayComparisonValue)) {
+                                    $displayBar = false;
+                                }
+                                break;
+                            case '>':
+                                if (!($queryResult > $displayComparisonValue)) {
+                                    $displayBar = false;
+                                }
+                                break;
+                        }
+                        /*$replacementParams["{$threadCountRule['displayKey']}"] = my_number_format(
+                            $queryResult
+                        );*/
+                    } elseif (!$queryResult) {
+                        $displayBar = false;
+                    }
+
+                    if (isset($threadCountRule['displayKey']) && my_strlen($threadCountRule['displayKey']) > 2) {
+                        $replacementParams["{{$threadCountRule['displayKey']}}"] = my_number_format(
+                            $queryResult
+                        );
+                    }
+
+                    // we only allow single forum rule for the time being
+                    break;
+                }
+            }
+        }
+
+        if (!$displayBar) {
+            continue;
+        }
+
+        $announcementBar = announcementBuildBar(
+            $announcementData,
+            $announcementID,
+            replacementParams: $replacementParams
+        );
+
+        $announcementsList[] = eval(getTemplate('globalAnnouncements'));
+
+        if ($announcementsLimit !== 0 && count($announcementsList) >= $announcementsLimit) {
+            break;
         }
     }
 
-    if ($announcementsList) {
-        $javaScript = announcementBuildJavaScript();
-
-        $announcementsList = eval(getTemplate('globalWrapper'));
+    if (!$announcementsList) {
+        return $pageContents;
     }
+
+    $javaScript = announcementBuildJavaScript();
+
+    $announcementsList = implode(',', $announcementsList);
+
+    $announcementsList = eval(getTemplate('globalWrapper'));
 
     return str_replace('<!--OUGC_ANNBARS-->', $announcementsList, $pageContents);
 }
@@ -603,14 +592,14 @@ function modcp_start(): void
             'style' => $announcementData['style'],
             'styleClassSelect' => $announcementData['styleClassSelect'] ?? '',
             'styleClassCustom' => $announcementData['styleClassCustom'] ?? '',
-            'groups' => (string)$announcementData['groups'],
+            'groups' => $announcementData['groups'] ?? '',
             'groupsSelect' => $mybb->get_input('displayGroupsSelect', MyBB::INPUT_ARRAY),
-            'forums' => (string)$announcementData['forums'],
+            'forums' => $announcementData['forums'] ?? '',
             'forumsSelect' => $mybb->get_input('displayForumsSelect', MyBB::INPUT_ARRAY),
-            'scripts' => (string)$announcementData['scripts'],
+            'scripts' => $announcementData['scripts'] ?? '',
             'startDate' => $announcementData['startdate'],
             'endDate' => $announcementData['enddate'],
-            'displayRules' => (string)$announcementData['frules'],
+            'displayRules' => $announcementData['frules'] ?? '',
             'displayOrder' => $announcementData['disporder'],
             'dismissible' => $announcementData['dismissible'],
             'visible' => $announcementData['visible'],
@@ -631,26 +620,6 @@ function modcp_start(): void
         $errorMessages = [];
 
         if ($mybb->request_method === 'post') {
-            /*
-
-            $inputData = [
-                'name' => $mybb->input['name'],
-                'message' => htmlspecialchars_uni($mybb->input['content'] ?? $announcementData['content']),
-                'style' => $mybb->input['styleClassSelect'] ?? $announcementData['style'],
-                'styleClassCustom' => htmlspecialchars_uni($mybb->input['styleClassCustom'] ?? $announcementData['style']),
-                'groups' => $mybb->input['groups'] ?? (string)$announcementData['groups'],
-                'groupsSelect' => $mybb->get_input('displayGroupsSelect', MyBB::INPUT_ARRAY),
-                'forums' => $mybb->input['forums'] ?? (string)$announcementData['forums'],
-                'forumsSelect' => $mybb->get_input('displayForumsSelect', MyBB::INPUT_ARRAY),
-                'scripts' => $mybb->input['scripts'] ?? (string)$announcementData['scripts'],
-                'startDate' => $mybb->input['startdate'] ?? $announcementData['startdate'],
-                'endDate' => $mybb->input['enddate'] ?? $announcementData['enddate'],
-                'displayRules' => isset($mybb->input['frules']) ? $mybb->input['frules'] : (string)$announcementData['frules'],
-                'displayOrder' => isset($mybb->input['disporder']) ? $mybb->input['disporder'] : $announcementData['disporder'],
-                'dismissible' => isset($mybb->input['dismissible']) ?? $announcementData['dismissible'],
-                'visible' => $mybb->input['visible'] ?? $announcementData['visible'],
-            ];*/
-
             $inputData['name'] = trim($inputData['name']);
 
             if (my_strlen($inputData['name']) < 1 || my_strlen($inputData['name']) > 100) {
@@ -671,11 +640,8 @@ function modcp_start(): void
                 $insertData = [
                     'name' => $inputData['name'],
                     'content' => $inputData['message'],
-                    //'style' => $inputData['style'],
-                    //'groups' => $inputData['groups'],
-                    //'forums' => $inputData['forums'],
                     'scripts' => $inputData['scripts'],
-                    'disporder' => $inputData['displayOrder'] >= 0 ? $inputData['displayOrder'] : 0,
+                    'disporder' => max($inputData['displayOrder'], 0),
                     'dismissible' => $inputData['dismissible'],
                     'visible' => $inputData['visible'],
                 ];
@@ -703,9 +669,7 @@ function modcp_start(): void
                 }
 
                 if (!empty($inputData['displayRules']) && json_decode($inputData['displayRules'])) {
-                    $insertData['frules'] = (new DateTimeImmutable(
-                        "{$inputData['displayRules']} 00:00:00"
-                    ))->getTimestamp();
+                    $insertData['frules'] = $inputData['displayRules'];
                 }
 
                 if (!empty($inputData['startDate'])) {
