@@ -24,62 +24,64 @@
  * <https://ougc.network/eula.txt>.
  ****************************************************************************/
 
-*[class*='ougc_annbars_'] {
-    color: #fff;
-    padding: 4px;
-    -webkit-box-shadow: inset 0 0 1px #FFF;
-    -moz-box-shadow: inset 0 0 1px #FFF;
-    box-shadow: inset 0 0 1px #FFF;
+*[class*='ougcAnnouncementBarItem'] {
+    color: #FFF;
+    padding: 0.4em;
+    -webkit-box-shadow: inset 0 0 0.1em #FFF;
+    -moz-box-shadow: inset 0 0 0.1em #FFF;
+    box-shadow: inset 0 0 0.1em #FFF;
+    margin-top: 1em;
+    margin-bottom: 1em;
 }
 
-*[class*='ougc_annbars_'] strong {
-    border-bottom: dashed 1px;
+*[class*='ougcAnnouncementBarItem'] strong {
+    border-bottom: dashed 0.1em;
 }
 
-.ougc_annbars_black {
-    border: 1px solid #000000;
+.ougcAnnouncementBarItemBlack {
+    border: 0.1em solid #000000;
     background: #393939 linear-gradient(to bottom, #393939, #2c2c2c, #1f1f1f, #131313, #000000);
 }
 
-.ougc_annbars_white {
+.ougcAnnouncementBarItemWhite {
     color: #000;
-    border: 1px solid #eeeeee;
+    border: 0.1em solid #eeeeee;
     background: #fcfcfc linear-gradient(to bottom, #fcfcfc, #f8f8f8, #f5f5f5, #f1f1f1, #eeeeee);
 }
 
-.ougc_annbars_red {
-    border: 1px solid #ff2929;
+.ougcAnnouncementBarItemRed {
+    border: 0.1em solid #ff2929;
     background: #ff3d3d linear-gradient(to bottom, #ff3d3d, #ff3838, #ff3433, #ff2f2e, #ff2929);
 }
 
-.ougc_annbars_blue {
-    border: 1px solid #2e82d6;
+.ougcAnnouncementBarItemBlue {
+    border: 0.1em solid #2e82d6;
     background: #448fda linear-gradient(to bottom, #448fda, #3f8cd9, #3989d8, #3485d7, #2e82d6);
 }
 
-.ougc_annbars_green {
-    border: 1px solid #0ac247;
+.ougcAnnouncementBarItemGreen {
+    border: 0.1em solid #0ac247;
     background: #0bda51 linear-gradient(to bottom, #0bda51, #0bd44e, #0bce4c, #0ac849, #0ac247);
 }
 
-.ougc_annbars_brown {
-    border: 1px solid #922626;
+.ougcAnnouncementBarItemBrown {
+    border: 0.1em solid #922626;
     background: #a52a2a linear-gradient(to bottom, #a52a2a, #a02929, #9b2828, #972727, #922626);
 }
 
-.ougc_annbars_pink {
+.ougcAnnouncementBarItemPink {
     color: #000;
-    border: 1px solid #ff8fbc;
+    border: 0.1em solid #ff8fbc;
     background: #ffa6c9 linear-gradient(to bottom, #ffa6c9, #ffa0c6, #ff9bc3, #ff95bf, #ff8fbc);
 }
 
-.ougc_annbars_orange {
+.ougcAnnouncementBarItemOrange {
     color: #000;
-    border: 1px solid #febf04;
+    border: 0.1em solid #febf04;
     background: #ffd65e linear-gradient(to bottom, #ffd65e, #ffd04e, #fecb3d, #fec528, #febf04);
 }
 
-*[class*='ougc_annbars_'] a:link, *[class*='ougc_annbars_'] a:visited, *[class*='ougc_annbars_'] a:hover, *[class*='ougc_annbars_'] a:active {
+*[class*='ougcAnnouncementBarItem'] a:link, *[class*='ougcAnnouncementBarItem'] a:visited, *[class*='ougcAnnouncementBarItem'] a:hover, *[class*='ougcAnnouncementBarItem'] a:active {
     text-decoration: none;
     color: inherit;
 }

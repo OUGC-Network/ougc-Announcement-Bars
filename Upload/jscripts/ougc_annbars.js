@@ -25,35 +25,49 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
 
-var OUGC_Plugins = OUGC_Plugins || {};
+const ougcAnnouncementBars = {
+    init: function () {
+        const AnnouncementItems = document.querySelectorAll('[id^="announcementBarItem"]');
 
-$.extend(true, OUGC_Plugins, {
-    initAnnoucementBarsSystem: function () {
-        $('div[id^="ougcannbars_bar_"]').each(function () {
-            var id = $(this).attr('id');
+        AnnouncementItems.forEach(AnnouncementItem => {
+            const AnnouncementItemIdentifier = AnnouncementItem.id;
 
-            var CookieVal = Cookie.get(id);
+            const CookieVal = Cookie.get(AnnouncementItemIdentifier);
 
             if (CookieVal) {
-                if (CookieVal < parseInt(ougcAnnouncementBarsCutoffDays)) {
-                    Cookie.unset(id);
+
+                if (CookieVal < parseInt(ougcAnnouncementBarsCutoffDays) || ougcAnnouncementBarsDebug) {
+                    Cookie.unset(AnnouncementItemIdentifier);
                 } else {
-                    $('#' + id).hide();
+                    AnnouncementItem.style.display = 'none';
                 }
             }
 
-            $('#' + id + ' .dismiss_notice').on('click', function () {
-                $('#' + id).fadeOut(250, function () {
-                    Cookie.set(id, parseInt(ougcAnnouncementBarsTimeNow));
+            const DismissElement = document.querySelector('#' + AnnouncementItemIdentifier + ' .ougcAnnouncementBarsDismissNotice');
+
+            if (DismissElement) {
+                DismissElement.addEventListener('click', (event) => {
+
+                    const fadeEffect = setInterval(function () {
+                        if (!AnnouncementItem.style.opacity) {
+                            AnnouncementItem.style.opacity = '1';
+                        }
+
+                        if (AnnouncementItem.style.opacity > 0) {
+                            AnnouncementItem.style.opacity -= '0.05';
+                        } else {
+                            clearInterval(fadeEffect);
+
+                            AnnouncementItem.style.display = 'none';
+
+                            Cookie.set(AnnouncementItemIdentifier, parseInt(ougcAnnouncementBarsTimeNow));
+                        }
+                    }, 10);
                 });
-            });
-        });
+            }
+        })
     },
-});
 
-OUGC_Plugins.initAnnoucementBarsSystem();
-
-const ougcAnnouncementBars = {
     checkAction: function (identifier) {
         let checked = '';
 
@@ -72,10 +86,11 @@ const ougcAnnouncementBars = {
         })
 
         const CheckedDefinition = document.getElementById(identifier + checked);
-        console.log([identifier, checked, identifier + checked]);
 
         if (CheckedDefinition) {
             CheckedDefinition.style.display = '';
         }
     }
 };
+
+ougcAnnouncementBars.init();

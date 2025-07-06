@@ -14,11 +14,12 @@
     <td class="trow1" align="center">
         <a href="{$mybb->settings['bburl']}/{$editUrl}">{$lang->ougcAnnouncementBarsModeratorControlPanelTableHeaderOptionsEdit}</a>
         |
-        <a href="{$mybb->settings['bburl']}/{$deleteUrl}" onclick="return confirm('Press a button!')">{$lang->ougcAnnouncementBarsModeratorControlPanelTableHeaderOptionsDelete}</a>
+        <a href="{$mybb->settings['bburl']}/{$deleteUrl}"
+           onclick="return confirm('{$lang->ougcAnnouncementBarsModeratorControlPanelTableHeaderOptionsDeleteConfirm}')">{$lang->ougcAnnouncementBarsModeratorControlPanelTableHeaderOptionsDelete}</a>
     </td>
 </tr>
 <tr>
-    <td class="trow2" align="center" colspan="6">
+    <td class="trow2" colspan="6">
         {$announcementBar}
     </td>
 </tr>

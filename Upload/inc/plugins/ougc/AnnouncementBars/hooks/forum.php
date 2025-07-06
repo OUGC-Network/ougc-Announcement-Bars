@@ -420,7 +420,7 @@ function pre_output_page(string &$pageContents): string
 
     $javaScript = announcementBuildJavaScript();
 
-    $announcementsList = implode(',', $announcementsList);
+    $announcementsList = implode('', $announcementsList);
 
     $announcementsList = eval(getTemplate('globalWrapper'));
 
@@ -454,6 +454,10 @@ function modcp_start(): void
         return;
     }
 
+    add_breadcrumb($lang->nav_modcp, 'modcp.php');
+
+    add_breadcrumb($lang->ougcAnnouncementBarsModeratorControlPanelBreadcrumb, $pageUrl);
+
     $hasPermission || error_no_permission();
 
     languageLoad();
@@ -472,8 +476,12 @@ function modcp_start(): void
         announcementDelete($announcementID);
 
         log_moderator_action(
-            ['announcementID' => $announcementID, 'announcementName' => $announcementData['name']],
-            'ougc_announcement_bars'
+            [
+                'announcementID' => $announcementID,
+                'announcementName' => $announcementData['name'],
+                'manage' => $mybb->get_input('manage')
+            ],
+            'ougcAnnouncementBars'
         );
 
         cacheUpdate();
@@ -623,6 +631,8 @@ function modcp_start(): void
         $errorMessages = [];
 
         if ($mybb->request_method === 'post') {
+            verify_post_check($mybb->get_input('my_post_key'));
+            
             $inputData['name'] = trim($inputData['name']);
 
             if (my_strlen($inputData['name']) < 1 || my_strlen($inputData['name']) > 100) {
@@ -691,8 +701,12 @@ function modcp_start(): void
                     announcementUpdate($insertData, $announcementID);
 
                     log_moderator_action(
-                        ['announcementID' => $announcementID, 'announcementName' => $announcementData['name']],
-                        'ougc_announcement_bars'
+                        [
+                            'announcementID' => $announcementID,
+                            'announcementName' => $announcementData['name'],
+                            'manage' => $mybb->get_input('manage')
+                        ],
+                        'ougcAnnouncementBars'
                     );
 
                     cacheUpdate();
@@ -703,8 +717,12 @@ function modcp_start(): void
                 announcementInsert($insertData);
 
                 log_moderator_action(
-                    ['announcementID' => $announcementID, 'announcementName' => $announcementData['name']],
-                    'ougc_announcement_bars'
+                    [
+                        'announcementID' => $announcementID,
+                        'announcementName' => $announcementData['name'],
+                        'manage' => $mybb->get_input('manage')
+                    ],
+                    'ougcAnnouncementBars'
                 );
 
                 cacheUpdate();
@@ -963,7 +981,7 @@ function modcp_modlogs_result(): void
 {
     global $logitem;
 
-    if ($logitem['action'] !== 'ougc_announcement_bars') {
+    if ($logitem['action'] !== 'ougcAnnouncementBars') {
         return;
     }
 

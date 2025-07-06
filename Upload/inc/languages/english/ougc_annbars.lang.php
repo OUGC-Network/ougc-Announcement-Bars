@@ -29,6 +29,7 @@
 $l = [
     'ougcAnnouncementBarsModeratorControlPanel' => 'Announcement Bars',
     'ougcAnnouncementBarsModeratorControlPanelNavigation' => 'Announcement Bars',
+    'ougcAnnouncementBarsModeratorControlPanelBreadcrumb' => 'Announcement Bars',
 
     'ougcAnnouncementBarsModeratorControlPanelTableTitle' => 'Announcement Bars',
     'ougcAnnouncementBarsModeratorControlPanelTableHeaderName' => 'Name',
@@ -47,6 +48,7 @@ $l = [
     'ougcAnnouncementBarsModeratorControlPanelTableHeaderDisplayScriptsNone' => 'None',
     'ougcAnnouncementBarsModeratorControlPanelTableHeaderOptionsEdit' => 'Edit',
     'ougcAnnouncementBarsModeratorControlPanelTableHeaderOptionsDelete' => 'Delete',
+    'ougcAnnouncementBarsModeratorControlPanelTableHeaderOptionsDeleteConfirm' => 'Are you sure you want to delete this announcement bar? This can not be reverted.',
 
     'ougcAnnouncementBarsModeratorControlPanelButtonNew' => 'New Announcement',
 

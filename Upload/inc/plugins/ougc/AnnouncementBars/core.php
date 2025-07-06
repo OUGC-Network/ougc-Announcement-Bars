@@ -331,6 +331,14 @@ function parseMessage(string $message, array $parserOptions = []): string
 
 function announcementBuildJavaScript(): string
 {
+    static $done = false;
+
+    if ($done) {
+        return '';
+    }
+
+    $done = true;
+
     global $mybb;
 
     $timeNow = TIME_NOW;
@@ -339,8 +347,12 @@ function announcementBuildJavaScript(): string
 
     $fileVersion = VERSION_CODE;
 
+    $debug = 'false';
+
     if (DEBUG) {
         $fileVersion = TIME_NOW;
+
+        $debug = 'true';
     }
 
     return eval(getTemplate('globalJavaScript'));
@@ -355,13 +367,13 @@ function announcementBuildBar(
     global $mybb, $lang;
     global $theme;
 
-    $announcementStyleClass = $announcementData['style_class'];
+    $announcementStyleClass = ucfirst($announcementData['style_class']);
 
     if (!in_array($announcementData['style_class'], STYLES)) {
-        $announcementStyleClass = 'custom ' . htmlspecialchars_uni($announcementData['style_class']);
+        $announcementStyleClass = 'Custom ' . htmlspecialchars_uni($announcementData['style_class']);
     }
 
-    $announcementElementIdentifier = $addIdentifier ? "ougcannbars_bar_{$announcementID}" : '';
+    $announcementElementIdentifier = $addIdentifier ? "announcementBarItem{$announcementID}" : '';
 
     $dismissButton = '';
 
@@ -400,7 +412,9 @@ function announcementBuildBar(
 
     $hiddenStyleClass = '';
 
-    if (!($announcementData['start_date'] < TIME_NOW && $announcementData['end_date'] >= TIME_NOW && !empty($announcementData['is_visible']))) {
+    if ((!empty($announcementData['start_date']) && $announcementData['start_date'] > TIME_NOW) ||
+        (!empty($announcementData['end_date']) && $announcementData['end_date'] < TIME_NOW) ||
+        isset($announcementData['is_visible']) && empty($announcementData['is_visible'])) {
         $hiddenStyleClass = 'ougcAnnouncementBarsHidden';
     }
 
