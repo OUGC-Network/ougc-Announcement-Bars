@@ -185,7 +185,7 @@ function pre_output_page(string &$pageContents): string
                         if (my_strpos($param, '=') !== false) {
                             list($paramName, $paramValue) = explode('=', $param, 2);
 
-                            if (str_contains($paramValue, ',')) {
+                            if (my_strpos($paramValue, ',') !== false) {
                                 $paramValue = explode(',', $paramValue);
                             }
                         } else {
@@ -404,7 +404,8 @@ function pre_output_page(string &$pageContents): string
         $announcementBar = announcementBuildBar(
             $announcementData,
             $announcementID,
-            replacementParams: $replacementParams
+            true,
+            $replacementParams
         );
 
         $announcementsList[] = eval(getTemplate('globalAnnouncements'));
@@ -632,7 +633,7 @@ function modcp_start(): void
 
         if ($mybb->request_method === 'post') {
             verify_post_check($mybb->get_input('my_post_key'));
-            
+
             $inputData['name'] = trim($inputData['name']);
 
             if (my_strlen($inputData['name']) < 1 || my_strlen($inputData['name']) > 100) {
@@ -734,7 +735,7 @@ function modcp_start(): void
         $preview = '';
 
         if (!$errorMessages && $mybb->get_input('preview')) {
-            $announcementBar = announcementBuildBar($announcementData, $announcementID, false);
+            $announcementBar = announcementBuildBar($announcementData, $announcementID);
 
             $preview = eval(getTemplate('moderatorControlPanelNewEditPreview'));
         }
@@ -938,7 +939,7 @@ function modcp_start(): void
             $displayScripts = implode($lang->comma, $displayScripts);
         }
 
-        $announcementBar = announcementBuildBar($announcementData, $announcementID, false);
+        $announcementBar = announcementBuildBar($announcementData, $announcementID);
 
         $editUrl = urlHandlerBuild(
             array_merge(

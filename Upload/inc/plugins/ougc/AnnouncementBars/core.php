@@ -361,7 +361,7 @@ function announcementBuildJavaScript(): string
 function announcementBuildBar(
     array $announcementData,
     int $announcementID,
-    bool $addIdentifier = true,
+    bool $addIdentifier = false,
     array $replacementParams = []
 ): string {
     global $mybb, $lang;
