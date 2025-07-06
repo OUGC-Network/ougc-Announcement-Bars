@@ -33,9 +33,7 @@ use function ougc\AnnouncementBars\Admin\pluginInformation;
 use function ougc\AnnouncementBars\Admin\pluginIsInstalled;
 use function ougc\AnnouncementBars\Admin\pluginUninstallation;
 use function ougc\AnnouncementBars\Core\addHooks;
-use function ougc\AnnouncementBars\Core\announcementGet;
 use function ougc\AnnouncementBars\Core\cacheUpdate;
-use function ougc\AnnouncementBars\Core\languageLoad;
 
 use const ougc\AnnouncementBars\ROOT;
 

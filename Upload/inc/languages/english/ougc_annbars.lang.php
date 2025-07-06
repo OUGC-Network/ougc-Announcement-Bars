@@ -62,7 +62,14 @@ $l = [
     'ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderName' => 'Name',
     'ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderNameDescription' => 'Select a name to identify this announcement bar in the moderator control panel.',
     'ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderMessage' => 'Message',
-    'ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderMessageDescription' => 'The announcement bar message displayed to users.',
+    'ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderMessageDescription' => 'The announcement bar message displayed to users.<pre>
+{username} = Current user username
+{forum_name} = Forum name
+{forum_url} = Forum URL
+{start_date} = Start date
+{end_date} = End date
+{displayKey?} = For a Display Rule result value
+</pre>',
     'ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderStyleClass' => 'Style Class',
     'ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderStyleClassDescription' => 'The announcement bar CSS style class.',
     'ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderStylePredefined' => 'Predefined',
@@ -105,12 +112,12 @@ $l = [
     'ougcAnnouncementBarsModeratorControlPanelNewEditButtonEdit' => 'Edit Announcement',
 
     'ougcAnnouncementBarsModeratorControlPanelNewEditErrorInvalidName' => 'The announcement bar name must be between 1 and 100 characters.',
-    'ougcAnnouncementBarsModeratorControlPanelNewEditErrorInvalidContent' => 'The announcement bar message is invalid.',
+    'ougcAnnouncementBarsModeratorControlPanelNewEditErrorInvalidMessage' => 'The announcement bar message is invalid.',
     'ougcAnnouncementBarsModeratorControlPanelNewEditErrorInvalidDisplayRules' => 'The display rules code is invalid. Make sure the code is JSON compatible.',
 
-    // You can change bars contents by announcement id, for example, if you uncomment next line it will show up as the content of bar which id is 5.
+    // You can change bars message by announcement id, for example, if you uncomment next line it will show up as the message of bar which id is 5.
     'ougcAnnouncementBarsCustomBarMessage5' => '<strong>Title:</strong> Hi {username}, you are visiting [url={forum_url}]{forum_name}[/url].',
     'ougcAnnouncementBarsCustomBarMessageX' => '<strong>{username}!!</strong> Click [u][url={forum_url}]here[/url][/u] to be the first one that actually clicked it!.',
 
-    'ougcAnnouncementBarsTaskRan' => 'The announcement bars task successfully ran.',
+    'ougc_announcement_bars_task_ran' => 'The announcement bars task successfully ran.',
 ];

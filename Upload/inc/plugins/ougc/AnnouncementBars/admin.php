@@ -47,7 +47,7 @@ const TASK_DELETE = -1;
 
 const TABLES_DATA = [
     'ougc_annbars' => [
-        'aid' => [
+        'announcement_id' => [
             'type' => 'INT',
             'unsigned' => true,
             'auto_increment' => true,
@@ -58,52 +58,52 @@ const TABLES_DATA = [
             'size' => 100,
             'default' => ''
         ],
-        'content' => [
+        'message' => [
             'type' => 'TEXT',
             'null' => true,
         ],
-        'style' => [
+        'style_class' => [
             'type' => 'VARCHAR',
             'size' => 20,
             'default' => ''
         ],
-        'groups' => [
+        'display_groups' => [
             'type' => 'TEXT',
             'null' => true,
         ],
-        'forums' => [
+        'display_forums' => [
             'type' => 'TEXT',
             'null' => true,
         ],
-        'scripts' => [
+        'display_scripts' => [
             'type' => 'TEXT',
             'null' => true,
         ],
-        'frules' => [
+        'display_rules' => [
             'type' => 'TEXT',
             'null' => true,
         ],
-        'startdate' => [
+        'start_date' => [
             'type' => 'INT',
             'unsigned' => true,
             'default' => 0
         ],
-        'enddate' => [
+        'end_date' => [
             'type' => 'INT',
             'unsigned' => true,
             'default' => 0
         ],
-        'disporder' => [
+        'display_order' => [
             'type' => 'INT',
             'unsigned' => true,
             'default' => 1
         ],
-        'dismissible' => [
+        'is_dismissable' => [
             'type' => 'TINYINT',
             'unsigned' => true,
             'default' => 1
         ],
-        'visible' => [
+        'is_visible' => [
             'type' => 'TINYINT',
             'unsigned' => true,
             'default' => 1
@@ -119,7 +119,7 @@ function pluginInformation(): array
 
     return [
         'name' => 'ougc Announcement Bars',
-        'description' => $lang->ougc_annbars_plugin_d,
+        'description' => $lang->ougcAnnouncementBarsDescription,
         'website' => 'https://ougc.network',
         'author' => 'Omar G.',
         'authorsite' => 'https://ougc.network',
@@ -145,25 +145,25 @@ function pluginActivation(): void
     $settingsData = json_decode($settingsContents, true);
 
     foreach ($settingsData as $settingKey => &$settingData) {
-        if (empty($lang->{"setting_ougc_announcement_bars_{$settingKey}"})) {
+        if (empty($lang->{"setting_ougcAnnouncementBars_{$settingKey}"})) {
             continue;
         }
 
         if ($settingData['optionscode'] == 'select' || $settingData['optionscode'] == 'checkbox') {
             foreach ($settingData['options'] as $optionKey) {
-                $settingData['optionscode'] .= "\n{$optionKey}={$lang->{"setting_ougc_announcement_bars_{$settingKey}_{$optionKey}"}}";
+                $settingData['optionscode'] .= "\n{$optionKey}={$lang->{"setting_ougcAnnouncementBars_{$settingKey}_{$optionKey}"}}";
             }
         }
 
-        $settingData['title'] = $lang->{"setting_ougc_announcement_bars_{$settingKey}"};
+        $settingData['title'] = $lang->{"setting_ougcAnnouncementBars_{$settingKey}"};
 
-        $settingData['description'] = $lang->{"setting_ougc_announcement_bars_{$settingKey}_desc"};
+        $settingData['description'] = $lang->{"setting_ougcAnnouncementBars_{$settingKey}_desc"};
     }
 
     $PL->settings(
         'ougc_annbars',
-        $lang->setting_group_ougc_announcement_bars_rules,
-        $lang->setting_group_ougc_announcement_bars_rules_desc,
+        $lang->setting_group_ougcAnnouncementBars_rules,
+        $lang->setting_group_ougcAnnouncementBars_rules_desc,
         $settingsData
     );
 
@@ -208,9 +208,9 @@ function pluginActivation(): void
         $plugins['annbars'] = $pluginInformation['versioncode'];
     }
 
-    dbVerifyTables();
-
     /*~*~* RUN UPDATES START *~*~*/
+    global $db;
+
     /*
     if($plugins['annbars'] <= 1836)
     {
@@ -224,7 +224,37 @@ function pluginActivation(): void
     }
     */
 
+    if (pluginIsInstalled()) {
+        foreach (
+            [
+                'aid' => 'announcement_id',
+                'content' => 'message',
+                'style' => 'style_class',
+                'groups' => 'display_groups',
+                'forums' => 'display_forums',
+                'scripts' => 'display_scripts',
+                'frules' => 'display_rules',
+                'startdate' => 'start_date',
+                'enddate' => 'end_date',
+                'disporder' => 'display_order',
+                'dismissible' => 'is_dismissable',
+                'visible' => 'is_visible',
+            ] as $oldFieldName => $newFieldName
+        ) {
+            if ($db->field_exists($oldFieldName, 'ougc_annbars')) {
+                $db->rename_column(
+                    'ougc_annbars',
+                    $oldFieldName,
+                    $newFieldName,
+                    dbBuildFieldDefinition(TABLES_DATA['ougc_annbars'][$newFieldName])
+                );
+            }
+        }
+    }
+
     /*~*~* RUN UPDATES END *~*~*/
+
+    dbVerifyTables();
 
     enableTask();
 
@@ -308,7 +338,7 @@ function pluginLibraryLoad(): void
     if (!$fileExists || $PL->version < $pluginInformation['pl']['version']) {
         flash_message(
             $lang->sprintf(
-                $lang->ougc_announcement_bars_plugin_library,
+                $lang->ougcAnnouncementBarsPluginLibrary,
                 $pluginInformation['pl']['url'],
                 $pluginInformation['pl']['version']
             ),
@@ -343,8 +373,8 @@ function enableTask(int $action = TASK_ENABLE): bool
         $_ = $db->escape_string('*');
 
         $new_task = [
-            'title' => $db->escape_string($lang->setting_group_ougc_announcement_bars_rules),
-            'description' => $db->escape_string($lang->setting_group_ougc_announcement_bars_rules_desc),
+            'title' => $db->escape_string($lang->setting_group_ougcAnnouncementBars_rules),
+            'description' => $db->escape_string($lang->setting_group_ougcAnnouncementBars_rules_desc),
             'file' => $db->escape_string('ougc_annbars'),
             'minute' => 0,
             'hour' => $_,

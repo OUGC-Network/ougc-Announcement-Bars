@@ -26,108 +26,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ****************************************************************************/
 
-// Plugin information.
-$l['ougc_annbars_plugin'] = 'ougc Announcement Bars';
-$l['ougc_annbars_plugin_d'] = 'Manage custom announcement notifications that render to users in the page.';
+$l = [
+    'ougcAnnouncementBars' => 'ougc Announcement Bars',
+    'ougcAnnouncementBarsDescription' => 'Manage custom announcement notifications that render to users in the page.',
 
-// PluginLibrary
-$l['ougc_announcement_bars_plugin_library'] = 'This plugin requires <a href="{1}">PluginLibrary</a> {2} or above, please install to continue.';
+    'ougcAnnouncementBarsPluginLibrary' => 'This plugin requires <a href="{1}">PluginLibrary</a> {2} or above, please install to continue.',
 
-// Settings
-$l['setting_group_ougc_announcement_bars_rules'] = 'Announcement Bars';
-$l['setting_group_ougc_announcement_bars_rules_desc'] = 'Manage custom announcement notifications that render to users in the page.';
-$l['setting_ougc_announcement_bars_limit'] = 'Bars Limit';
-$l['setting_ougc_announcement_bars_limit_desc'] = 'Write the maximum number of bars to show at any page. 0 = no limit.';
-$l['setting_ougc_announcement_bars_dismisstime'] = 'Dismiss Time';
-$l['setting_ougc_announcement_bars_dismisstime_desc'] = 'Input the amount of days users can keep announcements as dismissed.';
-$l['setting_ougc_announcement_bars_moderatorGroups'] = 'Moderator Groups';
-$l['setting_ougc_announcement_bars_moderatorGroups_desc'] = 'Select the moderator groups allowed to manage announcement bars from the moderator control panel.';
+    'setting_group_ougcAnnouncementBars_rules' => 'Announcement Bars',
+    'setting_group_ougcAnnouncementBars_rules_desc' => 'Manage custom announcement notifications that render to users in the page.',
 
-// ACP Page
-$l['ougc_annbars_menu'] = 'Announcement Bars';
-$l['ougc_annbars_permissions'] = 'Can manage announcement bars?';
-$l['ougc_annbars_tab_view'] = 'View';
-$l['ougc_annbars_tab_view_d'] = 'Manage any existing announcement bar.';
-$l['ougc_annbars_tab_view_table'] = 'Manage Existing Bars';
-$l['ougc_annbars_tab_add'] = 'Add';
-$l['ougc_annbars_tab_add_d'] = 'Add a new announcement bar.';
-$l['ougc_annbars_tab_edit'] = 'Edit';
-$l['ougc_annbars_tab_preview'] = 'Preview';
-$l['ougc_annbars_tab_edit_d'] = 'Edit any existing announcement bar.';
-$l['ougc_annbars_form_content'] = 'Content';
-$l['ougc_annbars_form_status'] = 'Status';
-$l['ougc_annbars_form_order'] = 'Display Order';
-$l['ougc_annbars_form_perpage'] = 'Per page';
-$l['ougc_annbars_form_submit'] = 'Update Order';
+    'setting_ougcAnnouncementBars_limit' => 'Bars Limit',
+    'setting_ougcAnnouncementBars_limit_desc' => 'Write the maximum number of bars to show at any page. 0 = no limit.',
+    'setting_ougcAnnouncementBars_dismisstime' => 'Dismiss Time',
+    'setting_ougcAnnouncementBars_dismisstime_desc' => 'Input the amount of days users can keep announcements as dismissed.',
+    'setting_ougcAnnouncementBars_moderatorGroups' => 'Moderator Groups',
+    'setting_ougcAnnouncementBars_moderatorGroups_desc' => 'Select the moderator groups allowed to manage announcement bars from the moderator control panel.',
 
-// Form lang
-$l['ougc_annbars_form_name'] = 'Name';
-$l['ougc_annbars_form_name_d'] = 'A show name for this bar.';
-$l['ougc_annbars_form_content'] = 'Content';
-$l['ougc_annbars_form_content_d'] = 'The content that will be displayed inside this bar.<pre>
-{username} = Current user username
-{forum_name} = Forum name
-{forum_url} = Forum URL
-{start_date} = Start date
-{end_date} = End date
-{displayKey?} = For a Display Rule result value
-</pre>';
-$l['ougc_annbars_form_visible'] = 'Visible Pages';
-$l['ougc_annbars_form_visible_d'] = 'Select the pages where this bar will be displayed in.';
-$l['ougc_annbars_form_everywhere'] = 'Everywhere';
-$l['ougc_annbars_form_custom'] = 'Custom';
-$l['ougc_annbars_form_hidden'] = 'Hidden';
-$l['ougc_annbars_form_style'] = 'Bar Style';
-$l['ougc_annbars_form_style_d'] = 'Select the bar style or a custom CSS name.';
-$l['ougc_annbars_form_groups'] = 'Visible to Groups';
-$l['ougc_annbars_form_groups_d'] = 'Select what user groups will see this bar.';
-$l['ougc_annbars_form_forums'] = 'Forums';
-$l['ougc_annbars_form_scripts'] = 'Scripts';
-$l['ougc_annbars_form_dismissible'] = 'Allow Dismissal';
-$l['ougc_annbars_form_dismissible_d'] = 'Allow users to dismiss this bar.';
-$l['ougc_annbars_form_startdate'] = 'Start Date';
-$l['ougc_annbars_form_startdate_d'] = 'Select the start date for the visibility of this bar.';
-$l['ougc_annbars_form_enddate'] = 'End Date';
-$l['ougc_annbars_form_enddate_d'] = 'Select the end date for the visibility of this bar.';
-$l['ougc_annbars_form_frules'] = 'Display Rules';
-$l['ougc_annbars_form_frules_d'] = 'A JSON format list of conditionals to manipulate the display of this announcement. Refer to the <a href="https://github.com/OUGC-Network/ougc-Announcement-Bars?tab=readme-ov-file#usage">README in the repository</a> for more information.';
-$l['ougc_annbars_form_frule_visible'] = 'Visible threads.';
-$l['ougc_annbars_form_frule_unapproved'] = 'Unapproved threads.';
-$l['ougc_annbars_form_frule_deleted'] = 'Deleted threads.';
-
-$l['ougc_annbars_button_submit'] = 'Submit';
-
-// Error / success message
-$l['ougc_annbars_error_invalid'] = 'Invalid announcement bar selected.';
-$l['ougc_annbars_error_invalidname'] = 'The name has to be between 1 and 100 characters long.';
-$l['ougc_annbars_error_invalidcontent'] = 'The bar requires some content.';
-$l['ougc_annbars_error_invalidstyle'] = 'The selected style is invalid.';
-$l['ougc_annbars_error_invalidstartdate'] = 'The start date has to be a valid date and also be a date before the end date.';
-$l['ougc_annbars_error_invalidenddate'] = 'The end date has to be a valid date.';
-
-$l['ougc_annbars_success_add'] = 'Announcement bar was created successfully.';
-$l['ougc_annbars_success_edit'] = 'Announcement bar was edited successfully.';
-$l['ougc_annbars_success_delete'] = 'Announcement bar deleted successfully.';
-$l['ougc_annbars_success_disporder'] = 'Announcement bar display order updated successfully.';
-$l['ougc_annbars_success_cache'] = 'The cache was rebuild successfully.';
-
-// View all
-$l['ougc_annbars_view_empty'] = 'There are currently no announcement bars to show.';
-
-// Styles
-$l['ougc_annbars_form_style_default'] = 'Default';
-$l['ougc_annbars_form_style_colors'] = 'Colors';
-$l['ougc_annbars_form_style_black'] = 'Black';
-$l['ougc_annbars_form_style_white'] = 'White';
-$l['ougc_annbars_form_style_red'] = 'Red';
-$l['ougc_annbars_form_style_green'] = 'Green';
-$l['ougc_annbars_form_style_blue'] = 'Blue';
-$l['ougc_annbars_form_style_brown'] = 'Brown';
-$l['ougc_annbars_form_style_pink'] = 'Pink';
-$l['ougc_annbars_form_style_orange'] = 'Orange';
-
-// Logs
-$l['admin_log_forum_ougc_annbars_add'] = '"{1}" ({2}) announcement bar added.';
-$l['admin_log_forum_ougc_annbars_edit'] = '"{1}" ({2}) announcement bar edited.';
-$l['admin_log_forum_ougc_annbars_delete'] = 'Announcement bar deleted.';
-$l['ougcAnnouncementBarsTaskRan'] = 'The announcement bars task successfully ran.';
+    'ougcAnnouncementBarsTaskRan' => 'The announcement bars task successfully ran.',
+];

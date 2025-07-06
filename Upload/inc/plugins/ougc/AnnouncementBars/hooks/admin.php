@@ -69,13 +69,13 @@ function admin_tools_get_admin_log_action(array &$hookArguments): void
 
     languageLoad();
 
-    $announcementData = announcementGet(["aid='{$hookArguments['logitem']['data'][0]}'"]);
+    $announcementData = announcementGet(["announcement_id='{$hookArguments['logitem']['data'][0]}'"]);
 
-    if (isset($announcementData['aid'])) {
+    if (isset($announcementData['announcement_id'])) {
         $lang->{$hookArguments['lang_string']} = $lang->sprintf(
             $lang->{$hookArguments['lang_string']},
             1,
-            $announcementData['aid']
+            $announcementData['announcement_id']
         );
     }
 }

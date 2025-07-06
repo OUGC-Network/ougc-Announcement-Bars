@@ -74,7 +74,7 @@ function languageLoad(): bool
 {
     global $lang;
 
-    if (!isset($lang->ougc_annbars_plugin)) {
+    if (!isset($lang->ougcAnnouncementBars)) {
         if (defined('IN_ADMINCP')) {
             $lang->load('ougc_annbars');
         } else {
@@ -160,60 +160,60 @@ function announcementInsert(array $announcementData, bool $isUpdate = false, int
 
     $insertData = [];
 
-    if (isset($announcementData['aid'])) {
-        $insertData['aid'] = (int)$announcementData['aid'];
+    if (isset($announcementData['announcement_id'])) {
+        $insertData['announcement_id'] = (int)$announcementData['announcement_id'];
     }
 
     if (isset($announcementData['name'])) {
         $insertData['name'] = $db->escape_string($announcementData['name']);
     }
 
-    if (isset($announcementData['content'])) {
-        $insertData['content'] = $db->escape_string($announcementData['content']);
+    if (isset($announcementData['message'])) {
+        $insertData['message'] = $db->escape_string($announcementData['message']);
     }
 
-    if (isset($announcementData['style'])) {
-        $insertData['style'] = $db->escape_string($announcementData['style']);
+    if (isset($announcementData['style_class'])) {
+        $insertData['style_class'] = $db->escape_string($announcementData['style_class']);
     }
 
-    if (isset($announcementData['groups'])) {
-        $insertData['groups'] = $db->escape_string($announcementData['groups']);
+    if (isset($announcementData['display_groups'])) {
+        $insertData['display_groups'] = $db->escape_string($announcementData['display_groups']);
     }
 
-    if (isset($announcementData['forums'])) {
-        $insertData['forums'] = $db->escape_string($announcementData['forums']);
+    if (isset($announcementData['display_forums'])) {
+        $insertData['display_forums'] = $db->escape_string($announcementData['display_forums']);
     }
 
-    if (isset($announcementData['scripts'])) {
-        $insertData['scripts'] = $db->escape_string($announcementData['scripts']);
+    if (isset($announcementData['display_scripts'])) {
+        $insertData['display_scripts'] = $db->escape_string($announcementData['display_scripts']);
     }
 
-    if (isset($announcementData['frules'])) {
-        $insertData['frules'] = $db->escape_string($announcementData['frules']);
+    if (isset($announcementData['display_rules'])) {
+        $insertData['display_rules'] = $db->escape_string($announcementData['display_rules']);
     }
 
-    if (isset($announcementData['startdate'])) {
-        $insertData['startdate'] = (int)$announcementData['startdate'];
+    if (isset($announcementData['start_date'])) {
+        $insertData['start_date'] = (int)$announcementData['start_date'];
     }
 
-    if (isset($announcementData['enddate'])) {
-        $insertData['enddate'] = (int)$announcementData['enddate'];
+    if (isset($announcementData['end_date'])) {
+        $insertData['end_date'] = (int)$announcementData['end_date'];
     }
 
-    if (isset($announcementData['disporder'])) {
-        $insertData['disporder'] = (int)$announcementData['disporder'];
+    if (isset($announcementData['display_order'])) {
+        $insertData['display_order'] = (int)$announcementData['display_order'];
     }
 
-    if (isset($announcementData['dismissible'])) {
-        $insertData['dismissible'] = (int)$announcementData['dismissible'];
+    if (isset($announcementData['is_dismissable'])) {
+        $insertData['is_dismissable'] = (int)$announcementData['is_dismissable'];
     }
 
-    if (isset($announcementData['visible'])) {
-        $insertData['visible'] = (int)$announcementData['visible'];
+    if (isset($announcementData['is_visible'])) {
+        $insertData['is_visible'] = (int)$announcementData['is_visible'];
     }
 
     if ($isUpdate) {
-        $db->update_query('ougc_annbars', $insertData, "aid='{$announcementID}'");
+        $db->update_query('ougc_annbars', $insertData, "announcement_id='{$announcementID}'");
 
         return $announcementID;
     }
@@ -230,14 +230,14 @@ function announcementDelete(int $announcementID): void
 {
     global $db;
 
-    $db->delete_query('ougc_annbars', "aid='{$announcementID}'");
+    $db->delete_query('ougc_annbars', "announcement_id='{$announcementID}'");
 }
 
 function announcementGet(array $whereClauses, array $queryFields = [], array $queryOptions = []): array
 {
     global $db;
 
-    $queryFields[] = 'aid';
+    $queryFields[] = 'announcement_id';
 
     $query = $db->simple_select(
         'ougc_annbars',
@@ -253,7 +253,7 @@ function announcementGet(array $whereClauses, array $queryFields = [], array $qu
     $announcementObjects = [];
 
     while ($announcementData = $db->fetch_array($query)) {
-        $announcementObjects[(int)$announcementData['aid']] = $announcementData;
+        $announcementObjects[(int)$announcementData['announcement_id']] = $announcementData;
     }
 
     return $announcementObjects;
@@ -270,14 +270,25 @@ function cacheUpdate(): array
     },
         announcementGet(
             [
-                "(startdate<'{$timeNow}' OR startdate='' OR startdate='0')",
-                "(enddate>='{$timeNow}' OR enddate='' OR enddate='0')",
-                "visible='1'",
-                "groups!=''",
-                'groups IS NOT NULL',
+                "(start_date<'{$timeNow}' OR start_date='' OR start_date='0')",
+                "(end_date>='{$timeNow}' OR end_date='' OR end_date='0')",
+                "is_visible='1'",
+                "display_groups!=''",
+                'display_groups IS NOT NULL',
             ],
-            ['aid', 'content', 'style', 'groups', 'forums', 'scripts', 'frules', 'startdate', 'enddate', 'dismissible'],
-            ['order_by' => 'disporder']
+            [
+                'announcement_id',
+                'message',
+                'style_class',
+                'display_groups',
+                'display_forums',
+                'display_scripts',
+                'display_rules',
+                'start_date',
+                'end_date',
+                'is_dismissable'
+            ],
+            ['order_by' => 'display_order']
         ));
 
     $cache->update('ougc_annbars', $cacheData);
@@ -344,23 +355,23 @@ function announcementBuildBar(
     global $mybb, $lang;
     global $theme;
 
-    $announcementStyleClass = $announcementData['style'];
+    $announcementStyleClass = $announcementData['style_class'];
 
-    if (!in_array($announcementData['style'], STYLES)) {
-        $announcementStyleClass = 'custom ' . htmlspecialchars_uni($announcementData['style']);
+    if (!in_array($announcementData['style_class'], STYLES)) {
+        $announcementStyleClass = 'custom ' . htmlspecialchars_uni($announcementData['style_class']);
     }
 
     $announcementElementIdentifier = $addIdentifier ? "ougcannbars_bar_{$announcementID}" : '';
 
     $dismissButton = '';
 
-    if ($announcementData['dismissible']) {
+    if ($announcementData['is_dismissable']) {
         $dismissButton = eval(getTemplate('announcementBarDismissButton'));
     }
 
     $lang_val = 'ougcAnnouncementBarsCustomBarMessage' . $announcementID;
 
-    $announcementMessage = $announcementData['content'];
+    $announcementMessage = $announcementData['message'];
 
     if (!empty($lang->{$lang_val})) {
         $announcementMessage = $lang->{$lang_val};
@@ -373,14 +384,14 @@ function announcementBuildBar(
         '{forum_name}' => $mybb->settings['bbname'],
         '{3}' => $mybb->settings['bburl'],
         '{forum_url}' => $mybb->settings['bburl'],
-        '{4}' => is_numeric($announcementData['startdate']) ?
-            my_date($mybb->settings['dateformat'], $announcementData['startdate']) : $announcementData['startdate'],
-        '{start_date}' => is_numeric($announcementData['startdate']) ?
-            my_date($mybb->settings['dateformat'], $announcementData['startdate']) : $announcementData['startdate'],
-        '{5}' => is_numeric($announcementData['enddate']) ?
-            my_date($mybb->settings['dateformat'], $announcementData['enddate']) : $announcementData['enddate'],
-        '{end_date}' => is_numeric($announcementData['enddate']) ?
-            my_date($mybb->settings['dateformat'], $announcementData['enddate']) : $announcementData['enddate'],
+        '{4}' => is_numeric($announcementData['start_date']) ?
+            my_date($mybb->settings['dateformat'], $announcementData['start_date']) : $announcementData['start_date'],
+        '{start_date}' => is_numeric($announcementData['start_date']) ?
+            my_date($mybb->settings['dateformat'], $announcementData['start_date']) : $announcementData['start_date'],
+        '{5}' => is_numeric($announcementData['end_date']) ?
+            my_date($mybb->settings['dateformat'], $announcementData['end_date']) : $announcementData['end_date'],
+        '{end_date}' => is_numeric($announcementData['end_date']) ?
+            my_date($mybb->settings['dateformat'], $announcementData['end_date']) : $announcementData['end_date'],
     ]);
 
     $announcementMessage = parseMessage(
@@ -389,7 +400,7 @@ function announcementBuildBar(
 
     $hiddenStyleClass = '';
 
-    if (!($announcementData['startdate'] < TIME_NOW && $announcementData['enddate'] >= TIME_NOW && !empty($announcementData['visible']))) {
+    if (!($announcementData['start_date'] < TIME_NOW && $announcementData['end_date'] >= TIME_NOW && !empty($announcementData['is_visible']))) {
         $hiddenStyleClass = 'ougcAnnouncementBarsHidden';
     }
 

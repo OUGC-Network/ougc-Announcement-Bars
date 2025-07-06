@@ -24,7 +24,7 @@
                 </div>
             </td>
             <td class="trow1" valign="top">
-                <textarea id="message" name="content" rows="20" cols="70">{$inputData['message']}</textarea>
+                <textarea id="message" name="message" rows="20" cols="70">{$inputData['message']}</textarea>
                 {$codeButtons}
             </td>
         </tr>
@@ -55,8 +55,8 @@
                         {$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderStyleClassCustom}
                     </label>
                     <div id="styleClassType2" class="styleClassTypeDefinition">
-                        <input type="text" class="textbox" name="styleClassCustom" size="20"
-                               value="{$inputData['styleClassCustom']}"/>
+                        <input type="text" class="textbox" name="style_class_custom" size="20"
+                               value="{$inputData['style_class_custom']}"/>
                     </div>
                 </fieldset>
                 <script type="text/javascript">
@@ -150,9 +150,9 @@
                 </div>
             </td>
             <td class="trow1" valign="top">
-                <textarea name="scripts" rows="5" cols="40"
+                <textarea name="display_scripts" rows="5" cols="40"
                           title="{$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderDisplayScriptsCustomPlaceholder}"
-                          placeholder="{$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderDisplayScriptsCustomPlaceholder}">{$inputData['scripts']}</textarea>
+                          placeholder="{$lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableHeaderDisplayScriptsCustomPlaceholder}">{$inputData['display_scripts']}</textarea>
             </td>
         </tr>
         <tr>
@@ -163,7 +163,7 @@
                 </div>
             </td>
             <td class="trow1" valign="top">
-                <input type="date" class="textbox" name="startdate" value="{$inputData['startDate']}"/>
+                <input type="date" class="textbox" name="start_date" value="{$inputData['start_date']}"/>
             </td>
         </tr>
         <tr>
@@ -174,7 +174,7 @@
                 </div>
             </td>
             <td class="trow1" valign="top">
-                <input type="date" class="textbox" name="enddate" value="{$inputData['endDate']}"/>
+                <input type="date" class="textbox" name="end_date" value="{$inputData['end_date']}"/>
             </td>
         </tr>
         <tr>
@@ -185,7 +185,7 @@
                 </div>
             </td>
             <td class="trow1" valign="top">
-                <textarea name="frules" rows="15" cols="70">{$inputData['displayRules']}</textarea>
+                <textarea name="display_rules" rows="15" cols="70">{$inputData['display_rules']}</textarea>
             </td>
         </tr>
         <tr>
@@ -196,7 +196,8 @@
                 </div>
             </td>
             <td class="trow1" valign="top">
-                <input type="number" class="textbox" name="disporder" value="{$inputData['displayOrder']}" min="0"/>
+                <input type="number" class="textbox" name="display_order" value="{$inputData['display_order']}"
+                       min="0"/>
             </td>
         </tr>
         <tr>
@@ -208,11 +209,11 @@
             </td>
             <td class="trow1" valign="top">
                 <label>
-                    <input type="radio" name="dismissible" value="0" {$checkedElementAllowDismissalNo}/>&nbsp;{$lang->no}
+                    <input type="radio" name="is_dismissable" value="0" {$checkedElementAllowDismissalNo}/>&nbsp;{$lang->no}
                 </label>
                 &nbsp;&nbsp;
                 <label>
-                    <input type="radio" name="dismissible" value="1" {$checkedElementAllowDismissalYes}/>&nbsp;{$lang->yes}
+                    <input type="radio" name="is_dismissable" value="1" {$checkedElementAllowDismissalYes}/>&nbsp;{$lang->yes}
                 </label>
             </td>
         </tr>
@@ -225,11 +226,11 @@
             </td>
             <td class="trow1" valign="top">
                 <label>
-                    <input type="radio" name="visible" value="0" {$checkedElementAllowEnabledNo}/>&nbsp;{$lang->no}
+                    <input type="radio" name="is_visible" value="0" {$checkedElementAllowEnabledNo}/>&nbsp;{$lang->no}
                 </label>
                 &nbsp;&nbsp;
                 <label>
-                    <input type="radio" name="visible" value="1" {$checkedElementAllowEnabledYes}/>&nbsp;{$lang->yes}
+                    <input type="radio" name="is_visible" value="1" {$checkedElementAllowEnabledYes}/>&nbsp;{$lang->yes}
                 </label>
             </td>
         </tr>

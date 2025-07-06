@@ -153,19 +153,19 @@ function pre_output_page(string &$pageContents): string
     $announcementsList = [];
 
     foreach ($announcementObjects as $announcementID => $announcementData) {
-        if (!is_member($announcementData['groups']) || (
+        if (!is_member($announcementData['display_groups']) || (
                 $forumID && (
-                    empty($announcementData['forums']) ||
-                    !is_member($announcementData['forums'], ['usergroup' => $forumID, 'additionalgroups' => ''])
+                    empty($announcementData['display_forums']) ||
+                    !is_member($announcementData['display_forums'], ['usergroup' => $forumID, 'additionalgroups' => ''])
                 )
             )) {
             continue;
         }
 
-        if (!empty($announcementData['scripts'])) {
+        if (!empty($announcementData['display_scripts'])) {
             $validScript = false;
 
-            foreach (array_map('trim', explode("\n", $announcementData['scripts'])) as $scriptName) {
+            foreach (array_map('trim', explode("\n", $announcementData['display_scripts'])) as $scriptName) {
                 if (my_strpos($scriptName, '{|}') !== false) {
                     $scriptInputs = explode('{|}', $scriptName);
 
@@ -223,7 +223,10 @@ function pre_output_page(string &$pageContents): string
 
         $displayBar = true;
 
-        if (!empty($announcementData['frules']) && $rulesScripts = json_decode($announcementData['frules'], true)) {
+        if (!empty($announcementData['display_rules']) && $rulesScripts = json_decode(
+                $announcementData['display_rules'],
+                true
+            )) {
             global $db;
 
             $whereClauses = [];
@@ -460,7 +463,7 @@ function modcp_start(): void
     if ($mybb->get_input('manage') === 'delete') {
         verify_post_check($mybb->get_input('my_post_key'));
 
-        $announcementData = announcementGet(["aid='{$announcementID}'"], ['name'], ['limit' => 1]);
+        $announcementData = announcementGet(["announcement_id='{$announcementID}'"], ['name'], ['limit' => 1]);
 
         if (empty($announcementData)) {
             error_no_permission();
@@ -492,20 +495,20 @@ function modcp_start(): void
 
         if ($isEditPage) {
             $announcementData = announcementGet(
-                ["aid='{$announcementID}'"],
+                ["announcement_id='{$announcementID}'"],
                 [
                     'name',
-                    'content',
-                    'style',
-                    'groups',
-                    'forums',
-                    'scripts',
-                    'frules',
-                    'startdate',
-                    'enddate',
-                    'disporder',
-                    'dismissible',
-                    'visible',
+                    'message',
+                    'style_class',
+                    'display_groups',
+                    'display_forums',
+                    'display_scripts',
+                    'display_rules',
+                    'start_date',
+                    'end_date',
+                    'display_order',
+                    'is_dismissable',
+                    'is_visible',
                 ],
                 ['limit' => 1]
             );
@@ -520,17 +523,17 @@ function modcp_start(): void
         } else {
             $announcementData = [
                 'name' => '',
-                'content' => '',
-                'style' => 'black',
-                'groups' => -1,
-                'forums' => -1,
-                'scripts' => '',
-                'frules' => '',
-                'startdate' => 0,
-                'enddate' => 0,
-                'disporder' => 1,
-                'dismissible' => 1,
-                'visible' => 1,
+                'message' => '',
+                'style_class' => 'black',
+                'display_groups' => -1,
+                'display_forums' => -1,
+                'display_scripts' => '',
+                'display_rules' => '',
+                'start_date' => 0,
+                'end_date' => 0,
+                'display_order' => 1,
+                'is_dismissable' => 1,
+                'is_visible' => 1,
             ];
 
             $tableTitle = $lang->ougcAnnouncementBarsModeratorControlPanelNewEditTableTitleNew;
@@ -543,43 +546,43 @@ function modcp_start(): void
         }
 
         if (!isset($mybb->input['styleClassType'])) {
-            if (in_array($announcementData['style'], STYLES, true)) {
+            if (in_array($announcementData['style_class'], STYLES, true)) {
                 $mybb->input['styleClassType'] = 1;
 
-                $announcementData['styleClassSelect'] = $announcementData['style'];
+                $announcementData['style_class_select'] = $announcementData['style_class'];
             } else {
                 $mybb->input['styleClassType'] = 2;
 
-                $announcementData['styleClassCustom'] = $announcementData['style'];
+                $announcementData['style_class_custom'] = $announcementData['style_class'];
             }
         }
 
         if (!isset($mybb->input['displayGroupsType'])) {
-            if ((int)$announcementData['groups'] === -1) {
+            if ((int)$announcementData['display_groups'] === -1) {
                 $mybb->input['displayGroupsType'] = 1;
-            } elseif (!empty($announcementData['groups'])) {
+            } elseif (!empty($announcementData['display_groups'])) {
                 $mybb->input['displayGroupsType'] = 2;
 
-                $mybb->input['displayGroupsSelect'] = explode(',', $announcementData['groups']);
+                $mybb->input['display_groups_select'] = explode(',', $announcementData['display_groups']);
             } else {
                 $mybb->input['displayGroupsType'] = 3;
             }
         }
 
         if (!isset($mybb->input['displayForumsType'])) {
-            if ((int)$announcementData['forums'] === -1) {
+            if ((int)$announcementData['display_forums'] === -1) {
                 $mybb->input['displayForumsType'] = 1;
-            } elseif (!empty($announcementData['forums'])) {
+            } elseif (!empty($announcementData['display_forums'])) {
                 $mybb->input['displayForumsType'] = 2;
 
-                $mybb->input['displayForumsSelect'] = explode(',', $announcementData['forums']);
+                $mybb->input['display_forums_select'] = explode(',', $announcementData['display_forums']);
             } else {
                 $mybb->input['displayForumsType'] = 3;
             }
         }
 
         if (!isset($mybb->input['displayScriptsType'])) {
-            if ((int)$announcementData['scripts'] === -1) {
+            if ((int)$announcementData['display_scripts'] === -1) {
                 $mybb->input['displayScriptsType'] = 1;
             } else {
                 $mybb->input['displayScriptsType'] = 2;
@@ -588,31 +591,31 @@ function modcp_start(): void
 
         $inputData = [
             'name' => $announcementData['name'],
-            'message' => $announcementData['content'],
-            'style' => $announcementData['style'],
-            'styleClassSelect' => $announcementData['styleClassSelect'] ?? '',
-            'styleClassCustom' => $announcementData['styleClassCustom'] ?? '',
-            'groups' => $announcementData['groups'] ?? '',
-            'groupsSelect' => $mybb->get_input('displayGroupsSelect', MyBB::INPUT_ARRAY),
-            'forums' => $announcementData['forums'] ?? '',
-            'forumsSelect' => $mybb->get_input('displayForumsSelect', MyBB::INPUT_ARRAY),
-            'scripts' => $announcementData['scripts'] ?? '',
-            'startDate' => $announcementData['startdate'],
-            'endDate' => $announcementData['enddate'],
-            'displayRules' => $announcementData['frules'] ?? '',
-            'displayOrder' => $announcementData['disporder'],
-            'dismissible' => $announcementData['dismissible'],
-            'visible' => $announcementData['visible'],
+            'message' => $announcementData['message'],
+            'style_class' => $announcementData['style_class'],
+            'style_class_select' => $announcementData['style_class_select'] ?? '',
+            'style_class_custom' => $announcementData['style_class_custom'] ?? '',
+            'display_groups' => $announcementData['display_groups'] ?? '',
+            'display_groups_select' => $mybb->get_input('display_groups_select', MyBB::INPUT_ARRAY),
+            'display_forums' => $announcementData['display_forums'] ?? '',
+            'display_forums_select' => $mybb->get_input('display_forums_select', MyBB::INPUT_ARRAY),
+            'display_scripts' => $announcementData['display_scripts'] ?? '',
+            'start_date' => $announcementData['start_date'],
+            'end_date' => $announcementData['end_date'],
+            'display_rules' => $announcementData['display_rules'] ?? '',
+            'display_order' => $announcementData['display_order'],
+            'is_dismissable' => $announcementData['is_dismissable'],
+            'is_visible' => $announcementData['is_visible'],
         ];
 
-        if (!empty($inputData['startDate']) && is_numeric($inputData['startDate'])) {
-            $inputData['startDate'] = (new DateTimeImmutable())->setTimestamp((int)$inputData['startDate'])->format(
+        if (!empty($inputData['start_date']) && is_numeric($inputData['start_date'])) {
+            $inputData['start_date'] = (new DateTimeImmutable())->setTimestamp((int)$inputData['start_date'])->format(
                 getSetting('inputTimeFormat')
             );
         }
 
-        if (!empty($inputData['endDate']) && is_numeric($inputData['endDate'])) {
-            $inputData['endDate'] = (new DateTimeImmutable())->setTimestamp((int)$inputData['endDate'])->format(
+        if (!empty($inputData['end_date']) && is_numeric($inputData['end_date'])) {
+            $inputData['end_date'] = (new DateTimeImmutable())->setTimestamp((int)$inputData['end_date'])->format(
                 getSetting('inputTimeFormat')
             );
         }
@@ -629,58 +632,58 @@ function modcp_start(): void
             $inputData['message'] = trim($inputData['message']);
 
             if (!$inputData['message']) {
-                $errorMessages[] = $lang->ougcAnnouncementBarsModeratorControlPanelNewEditErrorInvalidContent;
+                $errorMessages[] = $lang->ougcAnnouncementBarsModeratorControlPanelNewEditErrorInvalidMessage;
             }
 
-            if (!empty($inputData['displayRules']) && !json_decode($inputData['displayRules'])) {
+            if (!empty($inputData['display_rules']) && !json_decode($inputData['display_rules'])) {
                 $errorMessages[] = $lang->ougcAnnouncementBarsModeratorControlPanelNewEditErrorInvalidDisplayRules;
             }
 
             if (!$errorMessages && !$mybb->get_input('preview')) {
                 $insertData = [
                     'name' => $inputData['name'],
-                    'content' => $inputData['message'],
-                    'scripts' => $inputData['scripts'],
-                    'disporder' => max($inputData['displayOrder'], 0),
-                    'dismissible' => $inputData['dismissible'],
-                    'visible' => $inputData['visible'],
+                    'message' => $inputData['message'],
+                    'display_scripts' => $inputData['display_scripts'],
+                    'display_order' => max($inputData['display_order'], 0),
+                    'is_dismissable' => $inputData['is_dismissable'],
+                    'is_visible' => $inputData['is_visible'],
                 ];
 
                 if ($mybb->get_input('styleClassType', MyBB::INPUT_INT) === 1) {
-                    $insertData['style'] = $inputData['styleClassSelect'];
+                    $insertData['style_class'] = $inputData['style_class_select'];
                 } elseif ($mybb->get_input('styleClassType', MyBB::INPUT_INT) === 2) {
-                    $insertData['style'] = $inputData['styleClassCustom'];
+                    $insertData['style_class'] = $inputData['style_class_custom'];
                 }
 
                 if ($mybb->get_input('displayGroupsType', MyBB::INPUT_INT) === 1) {
-                    $insertData['groups'] = -1;
+                    $insertData['display_groups'] = -1;
                 } elseif ($mybb->get_input('displayGroupsType', MyBB::INPUT_INT) === 2) {
-                    $insertData['groups'] = implode(',', $inputData['groupsSelect']);
+                    $insertData['display_groups'] = implode(',', $inputData['display_groups_select']);
                 } elseif ($mybb->get_input('displayGroupsType', MyBB::INPUT_INT) === 3) {
-                    $insertData['groups'] = '';
+                    $insertData['display_groups'] = '';
                 }
 
                 if ($mybb->get_input('displayForumsType', MyBB::INPUT_INT) === 1) {
-                    $insertData['forums'] = -1;
+                    $insertData['display_forums'] = -1;
                 } elseif ($mybb->get_input('displayForumsType', MyBB::INPUT_INT) === 2) {
-                    $insertData['forums'] = implode(',', $inputData['forumsSelect']);
+                    $insertData['display_forums'] = implode(',', $inputData['display_forums_select']);
                 } elseif ($mybb->get_input('displayForumsType', MyBB::INPUT_INT) === 3) {
-                    $insertData['forums'] = '';
+                    $insertData['display_forums'] = '';
                 }
 
-                if (!empty($inputData['displayRules']) && json_decode($inputData['displayRules'])) {
-                    $insertData['frules'] = $inputData['displayRules'];
+                if (!empty($inputData['display_rules']) && json_decode($inputData['display_rules'])) {
+                    $insertData['display_rules'] = $inputData['display_rules'];
                 }
 
-                if (!empty($inputData['startDate'])) {
-                    $insertData['startdate'] = (new DateTimeImmutable(
-                        "{$inputData['startDate']} 00:00:00"
+                if (!empty($inputData['start_date'])) {
+                    $insertData['start_date'] = (new DateTimeImmutable(
+                        "{$inputData['start_date']} 00:00:00"
                     ))->getTimestamp();
                 }
 
-                if (!empty($inputData['endDate'])) {
-                    $insertData['enddate'] = (new DateTimeImmutable(
-                        "{$inputData['endDate']} 00:00:00"
+                if (!empty($inputData['end_date'])) {
+                    $insertData['end_date'] = (new DateTimeImmutable(
+                        "{$inputData['end_date']} 00:00:00"
                     ))->getTimestamp();
                 }
 
@@ -723,7 +726,7 @@ function modcp_start(): void
         $codeButtons = build_mycode_inserter();
 
         $styleClassSelect = (function () use ($mybb, $lang, $inputData): string {
-            $name = 'styleClassSelect';
+            $name = 'style_class_select';
 
             $selectOptions = '';
 
@@ -734,7 +737,7 @@ function modcp_start(): void
 
                 $selectedElement = '';
 
-                if ($value === $inputData['styleClassSelect']) {
+                if ($value === $inputData['style_class_select']) {
                     $selectedElement = 'selected="selected"';
                 }
 
@@ -755,7 +758,7 @@ function modcp_start(): void
         }
 
         $displayGroupsSelect = (function () use ($mybb, $lang, $groupsCache, $inputData): string {
-            $name = 'displayGroupsSelect[]';
+            $name = 'display_groups_select[]';
 
             $selectOptions = '';
 
@@ -764,7 +767,7 @@ function modcp_start(): void
 
                 $selectedElement = '';
 
-                if (in_array($value, $inputData['groupsSelect'])) {
+                if (in_array($value, $inputData['display_groups_select'])) {
                     $selectedElement = 'selected="selected"';
                 }
 
@@ -787,7 +790,7 @@ function modcp_start(): void
         }
 
         $displayForumsSelect = (function () use ($mybb, $lang, $forumsCache, $inputData): string {
-            $name = 'displayForumsSelect[]';
+            $name = 'display_forums_select[]';
 
             $selectOptions = '';
 
@@ -796,7 +799,7 @@ function modcp_start(): void
 
                 $selectedElement = '';
 
-                if (in_array($value, $inputData['forumsSelect'])) {
+                if (in_array($value, $inputData['display_forums_select'])) {
                     $selectedElement = 'selected="selected"';
                 }
 
@@ -820,7 +823,7 @@ function modcp_start(): void
 
         $checkedElementAllowDismissalNo = $checkedElementAllowDismissalYes = '';
 
-        if ($inputData['dismissible']) {
+        if ($inputData['is_dismissable']) {
             $checkedElementAllowDismissalYes = 'checked="checked"';
         } else {
             $checkedElementAllowDismissalNo = 'checked="checked"';
@@ -828,7 +831,7 @@ function modcp_start(): void
 
         $checkedElementAllowEnabledNo = $checkedElementAllowEnabledYes = '';
 
-        if ($inputData['visible']) {
+        if ($inputData['is_visible']) {
             $checkedElementAllowEnabledYes = 'checked="checked"';
         } else {
             $checkedElementAllowEnabledNo = 'checked="checked"';
@@ -851,32 +854,32 @@ function modcp_start(): void
         announcementGet(
             [],
             [
-                'aid',
+                'announcement_id',
                 'name',
-                'content',
-                'style',
-                'groups',
-                'forums',
-                'scripts',
-                'frules',
-                'startdate',
-                'enddate',
-                'dismissible',
-                'visible',
+                'message',
+                'style_class',
+                'display_groups',
+                'display_forums',
+                'display_scripts',
+                'display_rules',
+                'start_date',
+                'end_date',
+                'is_dismissable',
+                'is_visible',
             ],
-            ['order_by' => 'disporder']
+            ['order_by' => 'display_order']
         ) as $announcementID => $announcementData
     ) {
         $announcementName = htmlspecialchars_uni($announcementData['name']);
 
         $displayGroups = $lang->ougcAnnouncementBarsModeratorControlPanelTableHeaderDisplayGroupsAll;
 
-        if ($announcementData['groups'] === '') {
+        if ($announcementData['display_groups'] === '') {
             $displayGroups = $lang->ougcAnnouncementBarsModeratorControlPanelTableHeaderDisplayGroupsNone;
-        } elseif ((int)$announcementData['groups'] !== -1) {
+        } elseif ((int)$announcementData['display_groups'] !== -1) {
             $displayGroups = [];
 
-            foreach (explode(',', $announcementData['groups']) as $groupID) {
+            foreach (explode(',', $announcementData['display_groups']) as $groupID) {
                 if (!empty($groupsCache[$groupID]['title'])) {
                     $displayGroups[] = htmlspecialchars_uni($groupsCache[$groupID]['title']);
                 }
@@ -887,12 +890,12 @@ function modcp_start(): void
 
         $displayForums = $lang->ougcAnnouncementBarsModeratorControlPanelTableHeaderDisplayForumsAll;
 
-        if ($announcementData['forums'] === '') {
+        if ($announcementData['display_forums'] === '') {
             $displayForums = $lang->ougcAnnouncementBarsModeratorControlPanelTableHeaderDisplayForumsNone;
-        } elseif ((int)$announcementData['forums'] !== -1) {
+        } elseif ((int)$announcementData['display_forums'] !== -1) {
             $displayForums = [];
 
-            foreach (explode(',', $announcementData['forums']) as $groupID) {
+            foreach (explode(',', $announcementData['display_forums']) as $groupID) {
                 if (!empty($forumsCache[$groupID]['name'])) {
                     $displayForums[] = htmlspecialchars_uni(strip_tags($forumsCache[$groupID]['name']));
                 }
@@ -903,12 +906,12 @@ function modcp_start(): void
 
         $displayScripts = $lang->ougcAnnouncementBarsModeratorControlPanelTableHeaderDisplayForumsAll;
 
-        if ($announcementData['forums'] === '') {
+        if ($announcementData['display_forums'] === '') {
             $displayScripts = $lang->ougcAnnouncementBarsModeratorControlPanelTableHeaderDisplayForumsNone;
-        } elseif ((int)$announcementData['forums'] !== -1) {
+        } elseif ((int)$announcementData['display_forums'] !== -1) {
             $displayScripts = [];
 
-            foreach (explode(',', $announcementData['forums']) as $groupID) {
+            foreach (explode(',', $announcementData['display_forums']) as $groupID) {
                 if (!empty($forumsCache[$groupID]['name'])) {
                     $displayScripts[] = htmlspecialchars_uni(strip_tags($forumsCache[$groupID]['name']));
                 }
