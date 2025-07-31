@@ -923,10 +923,10 @@ function modcp_start(): void
             $displayForums = implode($lang->comma, $displayForums);
         }
 
-        $displayScripts = $lang->ougcAnnouncementBarsModeratorControlPanelTableHeaderDisplayForumsAll;
+        $displayScripts = $lang->ougcAnnouncementBarsModeratorControlPanelTableHeaderDisplayScriptsAll;
 
         if ($announcementData['display_forums'] === '') {
-            $displayScripts = $lang->ougcAnnouncementBarsModeratorControlPanelTableHeaderDisplayForumsNone;
+            $displayScripts = $lang->ougcAnnouncementBarsModeratorControlPanelTableHeaderDisplayScriptsNone;
         } elseif ((int)$announcementData['display_forums'] !== -1) {
             $displayScripts = [];
 

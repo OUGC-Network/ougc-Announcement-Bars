@@ -70,19 +70,11 @@ function addHooks(string $namespace): void
     }
 }
 
-function languageLoad(): bool
+function languageLoad(): void
 {
     global $lang;
 
-    if (!isset($lang->ougcAnnouncementBars)) {
-        if (defined('IN_ADMINCP')) {
-            $lang->load('ougc_annbars');
-        } else {
-            $lang->load('ougc_annbars', false, true);
-        }
-    }
-
-    return true;
+    isset($lang->ougcAnnouncementBars) || $lang->load('ougc_annbars');
 }
 
 function getSetting(string $settingKey = '')

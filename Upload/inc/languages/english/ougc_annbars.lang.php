@@ -27,6 +27,8 @@
  ****************************************************************************/
 
 $l = [
+    'ougcAnnouncementBars' => 'ougc Announcement Bars',
+
     'ougcAnnouncementBarsModeratorControlPanel' => 'Announcement Bars',
     'ougcAnnouncementBarsModeratorControlPanelNavigation' => 'Announcement Bars',
     'ougcAnnouncementBarsModeratorControlPanelBreadcrumb' => 'Announcement Bars',
