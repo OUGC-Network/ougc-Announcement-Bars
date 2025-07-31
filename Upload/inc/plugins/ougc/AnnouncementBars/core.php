@@ -36,9 +36,9 @@ use const ougc\AnnouncementBars\DEBUG;
 use const ougc\AnnouncementBars\ROOT;
 use const ougc\AnnouncementBars\SETTINGS;
 
-const VERSION = '1.8.37';
+const VERSION = '2.0.0';
 
-const VERSION_CODE = 1837;
+const VERSION_CODE = 2000;
 
 const STYLES = ['black', 'white', 'red', 'green', 'blue', 'brown', 'pink', 'orange'];
 
