@@ -8,7 +8,7 @@
  *
  *    Website: https://ougc.network
  *
- *    Manage custom announcement notifications that render to users in the page.
+ *    Manage announcement notification bars with multiple display rules.
  *
  ***************************************************************************
  ****************************************************************************
@@ -28,12 +28,12 @@
 
 $l = [
     'ougcAnnouncementBars' => 'ougc Announcement Bars',
-    'ougcAnnouncementBarsDescription' => 'Manage custom announcement notifications that render to users in the page.',
+    'ougcAnnouncementBarsDescription' => 'Manage announcement notification bars with multiple display rules.',
 
     'ougcAnnouncementBarsPluginLibrary' => 'This plugin requires <a href="{1}">PluginLibrary</a> {2} or above, please install to continue.',
 
     'setting_group_ougcAnnouncementBars_rules' => 'Announcement Bars',
-    'setting_group_ougcAnnouncementBars_rules_desc' => 'Manage custom announcement notifications that render to users in the page.',
+    'setting_group_ougcAnnouncementBars_rules_desc' => 'Manage announcement notification bars with multiple display rules.',
 
     'setting_ougcAnnouncementBars_limit' => 'Bars Limit',
     'setting_ougcAnnouncementBars_limit_desc' => 'Write the maximum number of bars to show at any page. 0 = no limit.',

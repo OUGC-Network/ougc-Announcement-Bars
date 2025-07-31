@@ -8,7 +8,7 @@
  *
  *    Website: http://omarg.me
  *
- *    Manage custom announcement notifications that render to users in the page.
+ *    Manage announcement notification bars with multiple display rules.
  *
  ***************************************************************************
  ****************************************************************************

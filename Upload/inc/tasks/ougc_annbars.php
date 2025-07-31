@@ -8,7 +8,7 @@
  *
  *    Website: https://ougc.network
  *
- *    Manage custom announcement notifications that render to users in the page.
+ *    Manage announcement notification bars with multiple display rules.
  *
  ***************************************************************************
  ****************************************************************************

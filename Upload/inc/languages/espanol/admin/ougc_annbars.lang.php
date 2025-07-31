@@ -8,7 +8,7 @@
  *
  *    Website: https://ougc.network
  *
- *    Manage custom announcement notifications that render to users in the page.
+ *    Manage announcement notification bars with multiple display rules.
  *
  ***************************************************************************
  ****************************************************************************
@@ -28,12 +28,12 @@
 
 $l = [
     'ougcAnnouncementBars' => 'ougc Announcement Bars',
-    'ougcAnnouncementBarsDescription' => 'Administrar notificaciones de anuncios personalizados que se muestran a los usuarios en la página.',
+    'ougcAnnouncementBarsDescription' => 'Gestiona barras de notificación de anuncios con múltiples reglas de visualización.',
 
     'ougcAnnouncementBarsPluginLibrary' => 'Este complemento requiere <a href="{1}">PluginLibrary</a> {2} o superior, por favor instálalo para continuar.',
 
     'setting_group_ougcAnnouncementBars_rules' => 'Barras de Anuncios',
-    'setting_group_ougcAnnouncementBars_rules_desc' => 'Administrar notificaciones de anuncios personalizados que se muestran a los usuarios en la página.',
+    'setting_group_ougcAnnouncementBars_rules_desc' => 'Gestiona barras de notificación de anuncios con múltiples reglas de visualización.',
 
     'setting_ougcAnnouncementBars_limit' => 'Límite de Barras',
     'setting_ougcAnnouncementBars_limit_desc' => 'Escribe el número máximo de barras para mostrar en cualquier página. 0 = sin límite.',

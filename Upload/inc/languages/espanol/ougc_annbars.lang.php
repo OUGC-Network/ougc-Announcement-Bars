@@ -8,7 +8,7 @@
  *
  *    Website: http://omarg.me
  *
- *    Manage custom announcement notifications that render to users in the page.
+ *    Manage announcement notification bars with multiple display rules.
  *
  ***************************************************************************
  ****************************************************************************
@@ -28,7 +28,7 @@
 
 $l = [
     'ougcAnnouncementBars' => 'ougc Announcement Bars',
-    
+
     'ougcAnnouncementBarsModeratorControlPanel' => 'Barras de Anuncios',
     'ougcAnnouncementBarsModeratorControlPanelNavigation' => 'Barras de Anuncios',
     'ougcAnnouncementBarsModeratorControlPanelBreadcrumb' => 'Barras de Anuncios',
